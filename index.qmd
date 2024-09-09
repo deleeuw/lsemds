@@ -1,0 +1,77 @@
+
+
+
+# Note {.unnumbered}
+
+This book will be expanded/updated frequently. The directory
+[github.com/deleeuw/stress](https://github.com/deleeuw/stress)
+has a pdf version, a html version, the bib file,  the complete Rmd 
+file with the codechunks, and the R and C source code. All suggestions for improvement
+of text or code are welcome, and some would be really beneficial. For
+example, I only use base R graphics, nothing more fancy, because base
+graphics is all I know.
+
+All text and code are in the public domain and can be copied, modified,
+and used by anybody in any way they see fit. Attribution will be
+appreciated, but is not required. For completeness we include a slighty
+modified version of the Unlicense as appendix \@ref(apunlicense).
+
+I number and label *all* displayed equations. Equations are displayed,
+instead of inlined, if and only if one of the following is true.
+
+-   They are important.
+-   They are referred to elsewhere in the text.
+-   Not displaying them messes up the line spacing.
+
+All code chunks in the text are named. Theorems, lemmas, chapters,
+sections, subsections and so on are also named and numbered, using
+bookdown/Rmarkdown.
+
+I have been somewhat hesitant to use lemmas, theorems, and corollaries
+in this book. But ultimately they enforce precision and provide an excellent organizational tool. If there is a proof of a lemma, theorem, or corollary, it
+ends with a $\square$.
+
+Another idiosyncracy: if a line in multiline displayed equation ends
+with "=", then the next line begins with "=". If it ends with "+", then
+the next line begin with "+", and if it ends with "-" the next line
+begins with "+" as well. I'll try to avoid ending a line with "+" or
+"-", especially with "-", but if it happens you are warned. A silly
+example is
+
+```{=tex}
+\begin{align}
+&(x+y)^2-\\
+&+4x=\\
+&=x^2+y^2-2x=\\
+&=(x-y)^2\geq\\
+&\geq 0.
+\end{align}
+```
+Just as an aside: if I refer to something that has been mentioned
+"above" I mean something that comes earlier in the book and "below"
+refers to anything that comes later. This always confuses me, so I had
+to write it down.
+
+The dilemma of whether to use "we" or "I" throughout the book is solved
+in the usual way. If I feel that a result is the work of a group (me, my
+co-workers, and the giants on whose shoulders we stand) then I use "we".
+If it's an individual decision, or something personal, then I use "I".
+The default is "we", as it always should be in scientific writing.
+
+Most of the individual chapters also have some of the necessary mathematical background material, both notation and results, sometimes with specific eleborations that seem useful for the book. Sometimes this background material is quite extensive. Examples are splines, majorization, unweighting, monotone
+regression, and the basic Zangwill and Ostrowski fixed point theorems we need for convergence analysis of our algorithms.
+
+There is an appendix \@ref(apcode) with code, and an appendix
+\@ref(apdatasets) with data sets. These contain brief descriptions and links to the supplementary materials directories, which contain the actual code and data.
+
+Something about code and R/C
+
+I will use this note to thank Rstudio, in particular J.J. Allaire and
+Yihui Xi, for their contributions to the R universe, and for their
+promotion of open source software and open access publications. Not too
+long ago I was an ardent LaTeX user, firmly convinced I would never use
+anything else again in my lifetime. In the same way thatI was convinced before I would never use anything besides, in that order,
+FORTRAN, PL/I, APL, and (X)Lisp. And PHP/Apache/MySQL. But I lived too long. And then, in my dotage, lo and behold, R, Rstudio, (R)Markdown, bookdown, blogdown, Git, Github, Netlify came along.
+
+![Forrest Young, Bepi Pinner, Jean-Marie Bouroche, Yoshio Takane, Jan de Leeuw at La Jolla, August 1975](graphics/lajolla_08_75.png)
+
