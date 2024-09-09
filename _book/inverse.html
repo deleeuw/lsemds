@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>24&nbsp; Inverse Multidimensional Scaling – Least Squares Euclidean Multidimensional Scaling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./stability.html" rel="next">
+<link href="./altls.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+</head><body class="nav-sidebar floating">.greybox {
+  padding: 1em;
+  background: white;
+  color: black;
+  border: 2px solid orange;
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./inverse.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Inverse Multidimensional Scaling</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Least Squares Euclidean Multidimensional Scaling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Note</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation and Reserved Symbols</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./properties.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Properties of Stress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spaces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stress Spaces</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classical Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./minimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Minimization of Basic Stress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acceleration of Convergence</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonmetric.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Nonmetric MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interval MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./polynomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Polynomial MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ordinal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Ordinal MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./splinical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Splinical MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unidimensional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./full.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Full-dimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unfolding.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unfolding</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./constrained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Constrained Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./individual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Individual Differences</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./asymmetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Asymmetry in MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nominal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Nominal MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonordinal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Nonmonotonic MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonpairs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Compound Objects</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sstress.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">sstress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rstress.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">fstress and rstress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./altls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Alternative Least Squares Loss</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inverse.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Inverse Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Stability of MDS Solutions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./global.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">In Search of Global Minima</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./backmatter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">(APPENDIX) Appendices</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#basic-imds" id="toc-basic-imds" class="nav-link active" data-scroll-target="#basic-imds"><span class="header-section-number">24.1</span> Basic IMDS</a></li>
+  <li><a href="#non-negative-dissimilarities" id="toc-non-negative-dissimilarities" class="nav-link" data-scroll-target="#non-negative-dissimilarities"><span class="header-section-number">24.2</span> Non-negative Dissimilarities</a></li>
+  <li><a href="#zero-weights-andor-distances" id="toc-zero-weights-andor-distances" class="nav-link" data-scroll-target="#zero-weights-andor-distances"><span class="header-section-number">24.3</span> Zero Weights and/or Distances</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">24.4</span> Examples</a>
+  <ul class="collapse">
+  <li><a href="#first-example" id="toc-first-example" class="nav-link" data-scroll-target="#first-example"><span class="header-section-number">24.4.1</span> First Example</a></li>
+  <li><a href="#second-example" id="toc-second-example" class="nav-link" data-scroll-target="#second-example"><span class="header-section-number">24.4.2</span> Second Example</a></li>
+  <li><a href="#third-example" id="toc-third-example" class="nav-link" data-scroll-target="#third-example"><span class="header-section-number">24.4.3</span> Third Example</a></li>
+  <li><a href="#fourth-example" id="toc-fourth-example" class="nav-link" data-scroll-target="#fourth-example"><span class="header-section-number">24.4.4</span> Fourth Example</a></li>
+  </ul></li>
+  <li><a href="#mds-sensitivity" id="toc-mds-sensitivity" class="nav-link" data-scroll-target="#mds-sensitivity"><span class="header-section-number">24.5</span> MDS Sensitivity</a></li>
+  <li><a href="#second-order-inverse-mds" id="toc-second-order-inverse-mds" class="nav-link" data-scroll-target="#second-order-inverse-mds"><span class="header-section-number">24.6</span> Second Order Inverse MDS</a></li>
+  <li><a href="#inverse-fds" id="toc-inverse-fds" class="nav-link" data-scroll-target="#inverse-fds"><span class="header-section-number">24.7</span> Inverse FDS</a></li>
+  <li><a href="#multiple-solutions" id="toc-multiple-solutions" class="nav-link" data-scroll-target="#multiple-solutions"><span class="header-section-number">24.8</span> Multiple Solutions</a></li>
+  <li><a href="#minimizing-istress" id="toc-minimizing-istress" class="nav-link" data-scroll-target="#minimizing-istress"><span class="header-section-number">24.9</span> Minimizing iStress</a></li>
+  <li><a href="#order-three" id="toc-order-three" class="nav-link" data-scroll-target="#order-three"><span class="header-section-number">24.10</span> Order three</a></li>
+  <li><a href="#order-four" id="toc-order-four" class="nav-link" data-scroll-target="#order-four"><span class="header-section-number">24.11</span> Order Four</a></li>
+  <li><a href="#sensitivity" id="toc-sensitivity" class="nav-link" data-scroll-target="#sensitivity"><span class="header-section-number">24.12</span> Sensitivity</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="chinverse" class="quarto-section-identifier"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Inverse Multidimensional Scaling</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In MDS we start with dissimilarities and we find a configuration that locally minimizes stress. We know that the equation we have to solve is <span class="math inline">\(B(X)X=VX\)</span>. MDS maps dissimilarities into configurations by finding one (or, ideally, all) solutions of this equation. In Inverse MDS (IMDS) we start wth the same equation <span class="math inline">\(B(X)X=VX\)</span>, but now we find all dissimilarity matrices for which a given configuration is a local optimum, or at least a stationary point. Thus we solve for <span class="math inline">\(\Delta\)</span> for given <span class="math inline">\(X\)</span>, and we study the inverse of the MDS map.</p>
+<p>Inverse MDS was first described in <span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span>, R code was provided in <span class="citation" data-cites="deleeuw_U_12b">De Leeuw (<a href="references.html#ref-deleeuw_U_12b" role="doc-biblioref">2012</a>)</span>, and some elaborations are in <span class="citation" data-cites="deleeuw_groenen_mair_E_16f">De Leeuw, Groenen, and Mair (<a href="references.html#ref-deleeuw_groenen_mair_E_16f" role="doc-biblioref">2016b</a>)</span>. This chapter leans heavily on <span class="citation" data-cites="deleeuw_groenen_mair_E_16f">De Leeuw, Groenen, and Mair (<a href="references.html#ref-deleeuw_groenen_mair_E_16f" role="doc-biblioref">2016b</a>)</span>, but we have reformulated some results and pruned some of the examples.</p>
+<p>In studying the IMDS mapping we limit ourselves, unless explicitly stated otherwise, to configurations <span class="math inline">\(X\)</span> that are <em>regular</em>, in the sense that <span class="math inline">\(d_{ij}(X)&gt;0\)</span> for all <span class="math inline">\(i\not= j\)</span>. This can be done without loss of generality. If some of the distances are zero, then the corresponding IMDS problem can be reduced to a regular problem with a smaller number of points (<span class="citation" data-cites="deleeuw_groenen_mair_E_16g">De Leeuw, Groenen, and Mair (<a href="references.html#ref-deleeuw_groenen_mair_E_16g" role="doc-biblioref">2016d</a>)</span>). Also, an <span class="math inline">\(n\times p\)</span> configuration <span class="math inline">\(X\)</span> is <em>normalized</em> if it is column-centered and has rank <span class="math inline">\(p\)</span>. For such <span class="math inline">\(X\)</span> there exist <span class="math inline">\(n\times (n-p-1)\)</span> centered orthonormal matrix <span class="math inline">\(K\)</span> such that <span class="math inline">\(K'X=0\)</span>. In IMDS we will always assume that <span class="math inline">\(X\)</span> is both regular and normalized. We also assume, unless it is explicitly stated otherwise, that all off-diagonal weights <span class="math inline">\(w_{ij}\)</span> are non-zero.</p>
+<p>In <span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span> two different basic IMDS versions are discussed. Both versions start with the stationary equation <span class="math inline">\(B(X)X=VX\)</span>. The first finds all <span class="math inline">\(W\)</span> and <span class="math inline">\(\Delta\)</span> for which a given <span class="math inline">\(X\)</span> is stationary. The second finds all <span class="math inline">\(\Delta\)</span> for a given <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> for which <span class="math inline">\(X\)</span> is stationary. In this chapter we only look at the second form of IMDS. As we shall see, the first version turns out introduce too many unknowns in <span class="math inline">\(W\)</span> and <span class="math inline">\(\Delta\)</span> to be useful. The second form also reflects the point of view that <span class="math inline">\(\Delta\)</span> are the data, while the <span class="math inline">\(W\)</span> are part of the definition of the loss function.</p>
+<section id="basic-imds" class="level2" data-number="24.1">
+<h2 data-number="24.1" class="anchored" data-anchor-id="basic-imds"><span class="header-section-number">24.1</span> Basic IMDS</h2>
+<p>Suppose <span class="math inline">\(X\)</span> is a regular and normalized configuration satisfying the stationary equation <span class="math inline">\((V-B(X))X=0\)</span>. Our first IMDS step is to describe the set <span class="math inline">\(\mathfrak{D}(X)\)</span> of all <span class="math inline">\(\Delta\)</span>E for which <span class="math inline">\(X\)</span> is stationary.</p>
+<div id="syminv" class="lemma">
+<p>Suppose <span class="math inline">\(X\)</span> is an <span class="math inline">\(n\times p\)</span> matrix of rank <span class="math inline">\(p&lt;n\)</span>. Suppose <span class="math inline">\(K\)</span> is an <span class="math inline">\(n\times(n-p)\)</span> orthonormal matrix with <span class="math inline">\(K'X=0\)</span>. Then a symmetric matrix <span class="math inline">\(A\)</span> satisfies <span class="math inline">\(AX=0\)</span> if and only if there is a symmetric <span class="math inline">\(S\)</span> such that <span class="math inline">\(A=KSK'\)</span>. If <span class="math inline">\(\text{rank}(K'AK)=r\)</span> then <span class="math inline">\(S\)</span> can be chosento be of order <span class="math inline">\(r\)</span>.</p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Suppose <span class="math inline">\(X=LT\)</span> with <span class="math inline">\(L\)</span> an orthonormal basis for the column space of <span class="math inline">\(X\)</span> and <span class="math inline">\(T\)</span> non-singular. Write <span class="math inline">\(A\)</span> as</p>
+<p><span class="math display">\[\begin{equation}
+A=\begin{bmatrix}L&amp;K\end{bmatrix}
+\begin{bmatrix}
+A_{11}&amp;A_{12}\\A_{21}&amp;A_{22}
+\end{bmatrix}
+\begin{bmatrix}L'\\K'\end{bmatrix}.
+(\#eq:invasolve)
+\end{equation}\]</span></p>
+<p>Then <span class="math inline">\(AX=LA_{11}T+KA_{21}=0\)</span> which is true if and only if <span class="math inline">\(A_{11}=0\)</span> and <span class="math inline">\(A_{21}=0\)</span>, and by symmetry <span class="math inline">\(A_{12}=0\)</span>. Thus <span class="math inline">\(A=KA_{22}K'\)</span>.</p>
+</div>
+<div id="keyresult" class="theorem">
+<p><span class="math inline">\(\Delta\in\mathfrak{D}(X)\)</span> if and only if there is a symmetric <span class="math inline">\(S\)</span> of order <span class="math inline">\(n-p-1\)</span> such that for all <span class="math inline">\(i\not= j\)</span></p>
+<p><span class="math display">\[\begin{equation}
+\delta_{ij}=d_{ij}(X)\left\{1-\frac{k_i'Sk_j^{\ }}{w_{ij}}\right\}.
+(\#eq:invalldelta)
+\end{equation}\]</span></p>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>By lemma XXX we have <span class="math inline">\((V-B(X))X=0\)</span> if and only if there is a symmetric <span class="math inline">\(S\)</span> such that <span class="math inline">\(V-B(X)=KSK'\)</span>. This can be rearranged to yield @ref(eq:invalldelta). Since the vector <span class="math inline">\(e\)</span> satisfies both <span class="math inline">\(X'e=0\)</span> and <span class="math inline">\((V-B(X))e=0\)</span> we can choose <span class="math inline">\(S\)</span> to be of order <span class="math inline">\(n-p-1\)</span>.</p>
+</div>
+<p>Thus <span class="math inline">\(\mathfrak{D}(X)\)</span> is a non-empty affine space, a translation of a linear subspace, closed under all linear combinations with coefficients that add up to one. Since <span class="math inline">\(S\)</span> is symmetric of order <span class="math inline">\(n-p-1\)</span>, equation @ref(eq:invalldelta) defines an affine subspace of dimension <span class="math inline">\(\frac12(n-p)(n-p-1)\)</span>. If <span class="math inline">\(n=3\)</span> and <span class="math inline">\(p=1\)</span>, or if <span class="math inline">\(n=4\)</span> and <span class="math inline">\(p=2\)</span>, the dimension is one. If <span class="math inline">\(n=4\)</span> and <span class="math inline">\(p=1\)</span> the dimension is three.</p>
+<p>If <span class="math inline">\(\Delta_1,\cdots,\Delta_m\)</span> are in <span class="math inline">\(\mathfrak{D}(X)\)</span>, then so is the affine subspace spanned by the <span class="math inline">\(\Delta_j\)</span>. For all configurations <span class="math inline">\(X\)</span> we have <span class="math inline">\(D(X)\in\mathfrak{D}(X)\)</span>. Specifically, if we compute a solution to the stationary equations <span class="math inline">\(X\)</span> with some MDS algorithm such as smacof, then the whole line through the data <span class="math inline">\(\Delta\)</span> and <span class="math inline">\(D(X)\)</span> is in <span class="math inline">\(\mathfrak{D}(X)\)</span>.</p>
+<p>The next result is corollary 6.3 in <span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span>.</p>
+<div class="cell">
+<pre class="corollary cell-code"><code>**`r corollary_nums("full_result", display = "f")`** If $p=n-1$ then $\Delta\in\mathfrak{D}(X)$ if and only if $\Delta=D(X)$ if and only if $\sigma(X)=0$.</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>If <span class="math inline">\(p=n-1\)</span> then <span class="math inline">\(S\)</span> in theorem @ref(thm:keyresult) is of order zero.</p>
+</div>
+<p>For any two elements of <span class="math inline">\(\mathfrak{D}(X)\)</span>, one cannot be elementwise larger (or smaller) than the other. This is corollary 3.3 in <span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span>.</p>
+<div class="cell">
+<pre class="corollary cell-code"><code>If $\Delta_1$ and $\Delta_2$ are both in $\mathfrak{DS}(X)$ and $\Delta_1\leq\Delta_2$, then $\Delta_1=\Delta_2$.</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>With obvious notation <span class="math inline">\(\mathbf{tr}\ X'(B_1(X)-B_2(X))X=0\)</span>, which can be written as</p>
+<p><span class="math display">\[\begin{equation}
+\mathop{\sum\sum}_{1\leq i&lt;j\leq n} w_{ij}\left(\delta_{1ij}-\delta_{2ij}\right)d_{ij}(X)=0,
+(\#eq:invcompare)
+\end{equation}\]</span></p>
+<p>and thus <span class="math inline">\(\Delta_1\leq\Delta_2\)</span> implies <span class="math inline">\(\Delta_1=\Delta_2\)</span>.</p>
+</div>
+</section>
+<section id="non-negative-dissimilarities" class="level2" data-number="24.2">
+<h2 data-number="24.2" class="anchored" data-anchor-id="non-negative-dissimilarities"><span class="header-section-number">24.2</span> Non-negative Dissimilarities</h2>
+<p>From equation @ref(eq:invalldelta) it follows <span class="math inline">\(\delta_{ij}\)</span> is a decreasing function of <span class="math inline">\(\tau_{ij}\)</span>, and <span class="math inline">\(\delta_{ij}\geq 0\)</span> if and only if <span class="math inline">\(\tau_{ij}\leq w_{ij}\)</span>.</p>
+<p>Convex cone, affine convex cone</p>
+<div class="cell">
+<pre class="lemma cell-code"><code>A non-vacuous polyhedral convex set $C=\{x\mid Ax\leq b\}$ is bounded if and only if $Q=\{x\mid Ax\leq 0\}=\{0\}$. </code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>See <span class="citation" data-cites="goldman_56">Goldman (<a href="references.html#ref-goldman_56" role="doc-biblioref">1956</a>)</span>, corollary 1B.</p>
+</div>
+<p>If <span class="math inline">\(C\)</span> satisfies the conditions of lemma @ref(lem:goldman) then it is a bounded convex polyhedron and is the convex hull of its finite set of extreme vectors.</p>
+<p>There are, of course, affine combinations <span class="math inline">\(\Delta\)</span> with negative elements. We could decide that we are only interested in non-negative dissimilarities. In order to deal with non-negativity we define <span class="math inline">\(\Delta_+\)</span> as the polyhedral convex cone of all symmetric, hollow, and non-negative matrices.</p>
+<div class="cell">
+<pre class="theorem cell-code"><code>We have $\Delta\in\Delta(W,X)\cap\Delta_+$ if and only if there is a symmetric $S$ such that \@(eq:invalldelta) holds and such that 
+\begin{equation}
+\mathbf{low}\ (KSK')\leq \mathbf{low}\ (W).
+\end{equation}
+Thus $\Delta(W,X)\cap\Delta_+$ is a convex polyhedron, closed under non-negative linear combinations with coefficients that add up to one.</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Follows easily from the representation in theorem @ref(thm:keyresult)} display = “n”)`.</p>
+</div>
+<p>Of course the minimum of <span class="math inline">\(\sigma(X,W,\Delta)\)</span> over <span class="math inline">\(\Delta\in\Delta(W,X)\cap\Delta_+\)</span> is zero, attained at <span class="math inline">\(D(X)\)</span>. The maximum of stress, which is a convex quadratic in <span class="math inline">\(\Delta\)</span>, is attained at one of the vertices of <span class="math inline">\(\Delta(W,X)\cap\Delta_+\)</span>.</p>
+<div class="cell">
+<pre class="theorem cell-code"><code>$\mathfrak{D}(X)\cap\mathfrak{D}_+$ is bounded, i.e. it is a convex polygon.</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>This is corollary 3.2 in <span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span>, but the proof given there is incorrect. A hopefully correct proof goes as follows. A polyhedron is bounded if and only if its recession cone is the zero vector. If the polyhedron is defined by <span class="math inline">\(Ax\leq b\)</span> then the recession cone is the solution set of <span class="math inline">\(Ax\leq 0\)</span>. Thus, in our case, the recession cone consists of all matrices <span class="math inline">\(S\)</span> for which <span class="math inline">\(\text{low}\ (KSK')\leq 0\)</span>. Since <span class="math inline">\(U:=KSK'\)</span> is doubly-centered, and <span class="math inline">\(K\)</span> is orthogonal to <span class="math inline">\(X\)</span>, we have</p>
+<p><span class="math display">\[\begin{equation}
+0=\text{tr}\ X'UX=2\mathop{\sum\sum}_{1\leq i&lt;j\leq n}u_{ij}d_{ij}^2(X).\
+\end{equation}\]</span>\end{equation}</p>
+<p>This implies <span class="math inline">\(U=0\)</span>, and the recession cone is the zero vector.</p>
+</div>
+<p>We can compute the vertices of <span class="math inline">\(\Delta(W,X)\cap\Delta_+\)</span> using the complete description method of <span class="citation" data-cites="fukuda_15">(<a href="references.html#ref-fukuda_15" role="doc-biblioref"><strong>fukuda_15?</strong></a>)</span>, with an <code>R</code> implementation in the <code>rcdd</code> package by <span class="citation" data-cites="geyer_meeden_15">(<a href="references.html#ref-geyer_meeden_15" role="doc-biblioref"><strong>geyer_meeden_15?</strong></a>)</span>. Alternatively, as a check on our computations, we also use the <code>lrs</code> method of <span class="citation" data-cites="avis_15">Avis (<a href="references.html#ref-avis_15" role="doc-biblioref">2015</a>)</span>, with an <code>R</code> implementation in the <code>vertexenum</code> package by <span class="citation" data-cites="robere_15">(<a href="references.html#ref-robere_15" role="doc-biblioref"><strong>robere_15?</strong></a>)</span>. Both methods convert the <em>H-representation</em> of the polygon, as the solution set of a number of linear inequalities, to the <em>V-representation</em>, as the convex combinations of a number of vertices.</p>
+<p>There is also a brute-force method of converting H to V that is somewhat wasteful, but still practical for small examples. Start with the H-representation <span class="math inline">\(Ax\leq b\)</span>, where <span class="math inline">\(A\)</span> is <span class="math inline">\(n\times m\)</span> with <span class="math inline">\(n\geq m\)</span>. Then look at all <span class="math inline">\(\binom{n}{m}\)</span> choices of <span class="math inline">\(m\)</span> rows of <span class="math inline">\(A\)</span>. Each choice partitions <span class="math inline">\(A\)</span> into the <span class="math inline">\(m\times m\)</span> matrix <span class="math inline">\(A_1\)</span> and the <span class="math inline">\((n-m)\times m\)</span> matrix <span class="math inline">\(A_2\)</span> and <span class="math inline">\(b\)</span> into <span class="math inline">\(B-1\)</span> and <span class="math inline">\(b_2\)</span>. If <span class="math inline">\(rank(A_1)&lt;m\)</span> there is no extreme point associated with this partitioning. If <span class="math inline">\(rank(A_1)=m\)</span> we compute <span class="math inline">\(\hat v=A_1^{-1}b_1\)</span> and if <span class="math inline">\(A_2\hat v\leq b_2\)</span> then we add <span class="math inline">\(\hat v\)</span> to the V representation.</p>
+</section>
+<section id="zero-weights-andor-distances" class="level2" data-number="24.3">
+<h2 data-number="24.3" class="anchored" data-anchor-id="zero-weights-andor-distances"><span class="header-section-number">24.3</span> Zero Weights and/or Distances</h2>
+<p>If a distance is zero then the corresponding element of <span class="math inline">\(B(X)\)</span> must be zero as well. If a weight is zero, then the corresponding elements of both <span class="math inline">\(V\)</span> and <span class="math inline">\(B(X)\)</span> are zero. It is still true that <span class="math inline">\((V-B)X=0\)</span> if and only if there is an <span class="math inline">\(S\)</span> such that <span class="math inline">\(B=V-KSK'\)</span>, but it may no longer be possible to find the <span class="math inline">\(\Delta\)</span> corresponding with some <span class="math inline">\(V+KSK'\)</span>. In other words, not all solutions <span class="math inline">\(B\)</span> to <span class="math inline">\((V-B)X=0\)</span> correspond with a proper <span class="math inline">\(B(X)\)</span>. Specifically, zero weights and/or distances imply that one or more elements of <span class="math inline">\(B\)</span> are required to be zero. If these zero requirements are taken into account then not all matrices <span class="math inline">\(S\)</span> are allowed.</p>
+<p>If, for example, <span class="math inline">\(X\)</span> is</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,] -0.5
+[2,] -0.5
+[3,]  0.5
+[4,]  0.5</code></pre>
+</div>
+</div>
+<p>and the weights are all one, then <span class="math inline">\(V-B\)</span> must be a linear combination of the three matrices, say <span class="math inline">\(P_{11}, P_{22}\)</span> and <span class="math inline">\(P_{12}\)</span>,</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1   -1    1   -1
+[2,]   -1    1   -1    1
+[3,]    1   -1    1   -1
+[4,]   -1    1   -1    1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1   -1   -1    1
+[2,]   -1    1    1   -1
+[3,]   -1    1    1   -1
+[4,]    1   -1   -1    1</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]   -2    2    0    0
+[2,]    2   -2    0    0
+[3,]    0    0    2   -2
+[4,]    0    0   -2    2</code></pre>
+</div>
+</div>
+<p>and <span class="math inline">\(B\)</span> is <span class="math inline">\(V\)</span> minus the linear combination. For any <span class="math inline">\(B\)</span> computed this way we have <span class="math inline">\(BX=VX\)</span>, but we have <span class="math inline">\(b_{12}=b_{34}=0\)</span> if and only if <span class="math inline">\(B=V-\alpha P_{11} + (1-\alpha) P_{22}\)</span>.</p>
+</section>
+<section id="examples" class="level2" data-number="24.4">
+<h2 data-number="24.4" class="anchored" data-anchor-id="examples"><span class="header-section-number">24.4</span> Examples</h2>
+<section id="first-example" class="level3" data-number="24.4.1">
+<h3 data-number="24.4.1" class="anchored" data-anchor-id="first-example"><span class="header-section-number">24.4.1</span> First Example</h3>
+<p>As our first example we take <span class="math inline">\(X\)</span> equal to four points in the corners of a square. This example is also used in <span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span> and <span class="citation" data-cites="deleeuw_U_12b">De Leeuw (<a href="references.html#ref-deleeuw_U_12b" role="doc-biblioref">2012</a>)</span>. Here <span class="math inline">\(X\)</span> is</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,] -0.5 -0.5
+[2,] -0.5  0.5
+[3,]  0.5  0.5
+[4,]  0.5 -0.5</code></pre>
+</div>
+</div>
+<p>with distances</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>         1        2        3
+2 1.000000                  
+3 1.414214 1.000000         
+4 1.000000 1.414214 1.000000</code></pre>
+</div>
+</div>
+<p>and <span class="math inline">\(K\)</span> is the vector</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.5  0.5 -0.5  0.5</code></pre>
+</div>
+</div>
+<p>For unit weights we have <span class="math inline">\(\Delta\in\Delta(X,W)\)</span> if and only if <span class="math inline">\(\Delta=D(X)\{W-\lambda kk'\}\)</span> for some real <span class="math inline">\(\lambda\)</span>. This means that <span class="math inline">\(\Delta\in\Delta(X,W)\cap\Delta_+\)</span> if and only if <span class="math inline">\(-4\leq\lambda\leq 4\)</span>. The endpoints of this interval correspond with the two dissimilarity matrices <span class="math display">\[
+\Delta_1:=2\sqrt{2}\begin{bmatrix}0&amp;0&amp;1&amp;0\\0&amp;0&amp;0&amp;1\\1&amp;0&amp;0&amp;0\\0&amp;1&amp;0&amp;0\end{bmatrix},
+\]</span> and <span class="math display">\[
+\Delta_2:=2\begin{bmatrix}0&amp;1&amp;0&amp;1\\1&amp;0&amp;1&amp;0\\0&amp;1&amp;0&amp;1\\1&amp;0&amp;1&amp;0\end{bmatrix}.
+\]</span> Thus <span class="math inline">\(\Delta(X,W)\cap\Delta_+\)</span> are the convex combinations <span class="math display">\[
+\Delta(\alpha):=\alpha\Delta_1+(1-\alpha)\Delta_2=
+\begin{bmatrix}0&amp;2(1-\alpha)&amp;2\alpha\sqrt{2}&amp;2(1-\alpha)\\2(1-\alpha)&amp;0&amp;2(1-\alpha)&amp;2\alpha\sqrt{2}\\2\alpha\sqrt{2}&amp;2(1-\alpha)&amp;0&amp;2(1-\alpha)\\2(1-\alpha)&amp;2\alpha\sqrt{2}&amp;2(1-\alpha)&amp;0\end{bmatrix}.
+\]</span> This can be thought of as the distances between points on a (generally non-Euclidean) square with sides <span class="math inline">\(2(1-\alpha)\)</span> and diagonal <span class="math inline">\(2\alpha\sqrt{2}\)</span>. The triangle inequalities are satisfied if the length of the diagonal is less than twice the length of the sides, i.e.&nbsp;if <span class="math inline">\(\alpha\leq\frac{2}{2+\sqrt{2}}\approx .585786\)</span>.</p>
+<p>The distances are certainly Euclidean if Pythagoras is satisfied, i.e.&nbsp;if the square of the length of the diagonal is twice the square of the length of the sides. This gives <span class="math inline">\(\alpha=\frac12\)</span>, for which <span class="math inline">\(\Delta=D(X)\)</span>. For a more precise analysis, observe that the two binary matrices, say <span class="math inline">\(E_1\)</span> and <span class="math inline">\(E_2\)</span>, in the definition of <span class="math inline">\(\Delta_1\)</span> and <span class="math inline">\(\Delta_2\)</span> commute, and are both diagonalized by</p>
+<p><span class="math display">\[
+L:=\begin{bmatrix}
+\frac12&amp;\frac12\sqrt{2}&amp;0&amp;\frac12\\
+\frac12&amp;0&amp;\frac12\sqrt{2}&amp;-\frac12\\
+\frac12&amp;-\frac12\sqrt{2}&amp;0&amp;\frac12\\
+\frac12&amp;0&amp;-\frac12\sqrt{2}&amp;-\frac12
+\end{bmatrix}
+\]</span></p>
+<p>The diagonal elements of <span class="math inline">\(L'E_1L\)</span> are <span class="math inline">\(1,-1,-1,1\)</span> and those of <span class="math inline">\(L'E_2 L\)</span> are <span class="math inline">\(2,0,0,-2\)</span>. Because <span class="math inline">\(L\)</span> diagonalizes <span class="math inline">\(E_1\)</span> and <span class="math inline">\(E_2\)</span>, it also diagonalizes <span class="math inline">\(\Delta_1\)</span> and <span class="math inline">\(\Delta_2\)</span>, as well as the elementwise squares <span class="math inline">\(\Delta^2_1\)</span> and <span class="math inline">\(\Delta^2_2\)</span>. And consequently also the Torgerson transform <span class="math inline">\(-\frac12 J\Delta^2(\alpha)J\)</span>, which has eigenvalues <span class="math inline">\(0,4\alpha^2,4\alpha^2,4(1-2\alpha)\)</span>. All eigenvalues are non-negative for <span class="math inline">\(\alpha\leq\frac12\)</span>.</p>
+<p>We see that <span class="math inline">\(\Delta(\alpha)\)</span> is two-dimensional Euclidean for <span class="math inline">\(\alpha=\frac12\)</span>, one-dimensional Euclidean for <span class="math inline">\(\alpha=0\)</span>, and three-dimensional Euclidean for <span class="math inline">\(0&lt;\alpha&lt;\frac12\)</span>. In particular for <span class="math inline">\(\alpha=\frac{1}{1+\sqrt{2}}\)</span> all dissimilarities are equal and <span class="math inline">\(\Delta(\alpha)\)</span> is the distance matrix of a regular simplex.</p>
+<p>On the unit interval stress is the quadratic <span class="math inline">\(32(\alpha-\frac12)^2\)</span>, which attains its maximum equal to 8 at the endpoints.</p>
+</section>
+<section id="second-example" class="level3" data-number="24.4.2">
+<h3 data-number="24.4.2" class="anchored" data-anchor-id="second-example"><span class="header-section-number">24.4.2</span> Second Example</h3>
+<p>We next give another small example with four equally spaced points on the line, normalized to sum of squares one, and unit weights. Thus <span class="math inline">\(X\)</span> is</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]
+[1,] -0.6708204
+[2,] -0.2236068
+[3,]  0.2236068
+[4,]  0.6708204</code></pre>
+</div>
+</div>
+<p>and <span class="math inline">\(D(X)\)</span> is</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>         1        2        3
+2 3.464102                  
+3 4.472136 2.828427         
+4 6.324555 4.472136 3.464102</code></pre>
+</div>
+</div>
+<p>For <span class="math inline">\(S\)</span> we use the basis <span class="math inline">\(\begin{bmatrix}1&amp;0\\0&amp;0\end{bmatrix}\)</span>, <span class="math inline">\(\begin{bmatrix}0&amp;0\\0&amp;1\end{bmatrix}\)</span>, and <span class="math inline">\(\begin{bmatrix}0&amp;1\\1&amp;0\end{bmatrix}\)</span>. Thus <span class="math inline">\(\Delta(X,W)\)</span> are the affine linear combinations of <span class="math inline">\(D(X)\)</span> and the three matrices</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>         1        2        3
+2 4.330127                  
+3 5.590170 2.121320         
+4 4.743416 5.590170 4.330127</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1        2        3
+2 3.983717                  
+3 3.801316 4.101219         
+4 6.640783 3.801316 3.983717</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1        2        3
+2 1.914908                  
+3 5.472136 2.828427         
+4 6.324555 3.472136 5.013295</code></pre>
+</div>
+</div>
+<p>Both <code>scdd()</code> from <code>rcdd</code> and `<code>from</code>vertexenum` find the same seven vertices. All non-negative dissimilarity matrices for which <span class="math inline">\(x\)</span> is stationary are convex combinations of these seven matrices.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>          1         2         3
+2 20.784610                    
+3  0.000000  5.656854          
+4  0.000000 13.416408  0.000000
+          1         2         3
+2 13.856406                    
+3  4.472136  0.000000          
+4  0.000000 13.416408  0.000000
+         1        2        3
+2 20.78461                  
+3  0.00000 22.62742         
+4  0.00000  0.00000 20.78461
+          1         2         3
+2  0.000000                    
+3 13.416408  5.656854          
+4  0.000000  0.000000 20.784610
+          1         2         3
+2  0.000000                    
+3 13.416408  0.000000          
+4  0.000000  4.472136 13.856406
+         1        2        3
+2 0.000000                  
+3 4.472136 0.000000         
+4 8.432738 4.472136 0.000000
+          1         2         3
+2  0.000000                    
+3  0.000000  5.656854          
+4 12.649111  0.000000  0.000000</code></pre>
+</div>
+</div>
+<p>The stress values for these seven vertices are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  460.00000  248.00000 1072.00000  460.00000  248.00000   36.44444  112.00000</code></pre>
+</div>
+</div>
+<p>and we know that 1072 is the maximum of stress over <span class="math inline">\(\Delta\in\Delta(X,W)\cap\Delta_+\)</span>.</p>
+<p>In general the vanishing of the stationary equations does not imply that <span class="math inline">\(X\)</span> corresponds with a local minimum. It can also give a local maximum or a saddle point. We know, however, that the only local maximum of stress is the origin (<span class="citation" data-cites="deleeuw_groenen_mair_E_16e">De Leeuw, Groenen, and Mair (<a href="references.html#ref-deleeuw_groenen_mair_E_16e" role="doc-biblioref">2016a</a>)</span>), and that in the one-dimensional case all solutions of the stationary equations that do not have tied coordinates are local minima (<span class="citation" data-cites="deleeuw_C_05h">De Leeuw (<a href="references.html#ref-deleeuw_C_05h" role="doc-biblioref">2005</a>)</span>).</p>
+</section>
+<section id="third-example" class="level3" data-number="24.4.3">
+<h3 data-number="24.4.3" class="anchored" data-anchor-id="third-example"><span class="header-section-number">24.4.3</span> Third Example</h3>
+<p>The number of extreme points of the polytope <span class="math inline">\(\Delta(W,X)\cap\Delta_+\)</span> grows very quickly if the problem becomes larger. In our next example we take six points equally spaced on the unit sphere. Due to the intricacies of floating point comparisons (testing for zero, testing for equality) it can be difficult to determine exactly how many extreme points there are.</p>
+<p><span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span> analyzed this example and found 42 extreme points. We repeat their analysis with our <code>R</code> function <code>bruteForce()</code> from the code section. We select <span class="math inline">\(\binom{15}{6}=5005\)</span> sets of six linear equations from our 15 linear inequalities, test them for non-singularity, and solve them to see if they satisfy the remaining nine inequalities. This gives 1394 extreme points of the polytope, but many of them are duplicates. We use our function <code>cleanUp()</code> to remove duplicates, which leaves 42 vertices, same number as found by <span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span>. The 42 stress values are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 24.00000 24.00000 24.00000 21.75000 12.00000 13.33333  6.66667 13.33333
+ [9] 17.33333 17.33333 19.68000 13.33333  6.66667 17.33333  6.66667 21.75000
+[17]  6.66667 60.00000 24.00000 21.75000 19.68000 17.33333 21.75000 13.33333
+[25] 19.68000 17.33333 17.33333 21.75000 17.33333 17.33333 13.33333  6.66667
+[33] 21.75000 17.33333 19.68000 13.33333 17.33333 19.68000 19.68000 17.33333
+[41]  6.66667 17.33333</code></pre>
+</div>
+</div>
+<p>and their maximum is 60.</p>
+<p>If we perform the calculations more efficiently in <code>rcdd</code>, using rational arithmetic, we come up with a list of 154 extreme points. Using <code>cleanUp()</code> to remove what seem to be duplicates leaves 42.</p>
+<p>The fact that we get different numbers of vertices with different methods is somewhat disconcerting. We test the vertices found by <code>rcdd</code> and <code>vertexenum</code> that are not found with the brute force method by using our function <code>rankTest()</code>. This test is based on the fact that a vector <span class="math inline">\(x\)</span> satisfying the <span class="math inline">\(n\times m\)</span> system <span class="math inline">\(Ax\leq b\)</span> is an extreme point if and only if matrix with all rows <span class="math inline">\(a_i\)</span> for which <span class="math inline">\(a_i'x=b_i\)</span> is of rank <span class="math inline">\(m\)</span>. It turns out all the additional vertices found by <code>rcdd</code> and <code>vertexenum</code> do not satisfy this rank test, because the matrix of active constraints (satisfied as equalities) is of rank 5.</p>
+</section>
+<section id="fourth-example" class="level3" data-number="24.4.4">
+<h3 data-number="24.4.4" class="anchored" data-anchor-id="fourth-example"><span class="header-section-number">24.4.4</span> Fourth Example</h3>
+<p>This is an unfolding example with <span class="math inline">\(n=3+3\)</span> points, configuration</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]       [,2]
+[1,]  0.0000000  0.0000000
+[2,]  0.0000000  0.0000000
+[3,]  0.0000000 -0.8164966
+[4,]  0.0000000  0.4082483
+[5,]  0.7071068  0.0000000
+[6,] -0.7071068  0.4082483</code></pre>
+</div>
+</div>
+<p>and weight matrix</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    0    0    0    1    1    1
+[2,]    0    0    0    1    1    1
+[3,]    0    0    0    1    1    1
+[4,]    1    1    1    0    0    0
+[5,]    1    1    1    0    0    0
+[6,]    1    1    1    0    0    0</code></pre>
+</div>
+</div>
+<p>Note that row-points one and two in <span class="math inline">\(X\)</span> are equal, and thus <span class="math inline">\(d_{12}(X)=0\)</span>. The example has both zero weights and zero distances. We now require that <span class="math inline">\((V-B(X))X=0\)</span>, but also that the elements of <span class="math inline">\(B(X)\)</span> in the two <span class="math inline">\(3\times 3\)</span> principal submatrices corresponding with the rows and columns are zero. This means that for the elements of <span class="math inline">\(B(X)\)</span> we require <span class="math inline">\(k_i'Sk_j\leq 1\)</span> for <span class="math inline">\(w_{ij}=1\)</span> and both <span class="math inline">\(k_i'Sk_j\leq 0\)</span> and <span class="math inline">\(-k_i'Sk_j\leq 0\)</span> for <span class="math inline">\(w_{ij}=0\)</span>. We can then solve for edges of the off-diagonal block of dissimilarities. There are no constraints on the dissimilarities in the diagonal blocks, because they are not part of the MDS problem.</p>
+<p>Using our brute force method, we find the two edges</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>          4        5        6
+1 0.0000000 1.414214 1.632993
+2 0.8164966 0.000000 0.000000
+3 1.2247449 1.080123 1.414214</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          4        5        6
+1 0.8164966 0.000000 0.000000
+2 0.0000000 1.414214 1.632993
+3 1.2247449 1.080123 1.414214</code></pre>
+</div>
+</div>
+<p>and the off-diagonal blocks for which <span class="math inline">\(X\)</span> is an unfolding solution are convex combinations of these two.</p>
+</section>
+</section>
+<section id="mds-sensitivity" class="level2" data-number="24.5">
+<h2 data-number="24.5" class="anchored" data-anchor-id="mds-sensitivity"><span class="header-section-number">24.5</span> MDS Sensitivity</h2>
+<p>Suppose <span class="math inline">\(X\)</span> is a solution to the MDS problem with dissimilarities <span class="math inline">\(\Delta\)</span>, found by some iterative algorithm such as <code>smacof</code>. We can then compute <span class="math inline">\(\mathfrak{D}(X)\cap\mathfrak{D}_+\)</span>, which is a convex neighborhood of the data <span class="math inline">\(\Delta\)</span>, and consists of all non-negative dissimilarity matrices that have <span class="math inline">\(X\)</span> as a solution to the stationary equations. The size of this convex neighborhood can be thought of as a measure of <em>stability</em> or <em>sensitivity</em>.</p>
+<p>For typical MDS examples there is no hope of computing all vertices of <span class="math inline">\(\mathfrak{D}(X)\cap\mathfrak{D}_+\)</span>. Consider the data from <span class="citation" data-cites="degruijter_67">De Gruijter (<a href="references.html#ref-degruijter_67" role="doc-biblioref">1967</a>)</span>, for example, with <span class="math inline">\(n=9\)</span> objects, to be scaled in <span class="math inline">\(p=2\)</span> dimensions. We have <span class="math inline">\(\frac12 n(n-1)=36\)</span> dissimilarities, and because <span class="math inline">\(m=n-p-1=6\)</span> there are <span class="math inline">\(\frac12 m(m+1)=21\)</span> variables. It suffices to consider that there are 5567902560 ways in which we can pick 21 rows from 36 rows to understand the number of potential vertices.</p>
+<p>What we can do, however, is to optimize linear (or quadratic functions) over <span class="math inline">\(\mathfrak{D}(X)\cap\mathfrak{D}_+\)</span>, because 36 linear inequalities in 21 variables define an easily manageable LP (or QP) problem. As an example, not necessarily a very sensible one, we solve 36 linear programs to maximize and minimize each of the <span class="math inline">\(\delta_{ij}\)</span> in <span class="math inline">\(\mathfrak{D}(X)\cap\mathfrak{D}_+\)</span> separately. We use the <code>lpSolve</code> package (<span class="citation" data-cites="berkelaar_15">Berkelaar, M. and others (<a href="references.html#ref-berkelaar_15" role="doc-biblioref">2015</a>)</span>), and collect the maximum and minimum <span class="math inline">\(\delta_{ij}\)</span> in a matrix. The range from the smallest possible <span class="math inline">\(\delta_{ij}\)</span> to the largest possible <span class="math inline">\(\delta_{ij}\)</span> turns out to be quite large.</p>
+<p>The data are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      KVP PvdA  VVD  ARP  CHU  CPN  PSP   BP  D66
+KVP  0.00 5.63 5.27 4.60 4.80 7.54 6.73 7.18 6.17
+PvdA 5.63 0.00 6.72 5.64 6.22 5.12 4.59 7.22 5.47
+VVD  5.27 6.72 0.00 5.46 4.97 8.13 7.55 6.90 4.67
+ARP  4.60 5.64 5.46 0.00 3.20 7.84 6.73 7.28 6.13
+CHU  4.80 6.22 4.97 3.20 0.00 7.80 7.08 6.96 6.04
+CPN  7.54 5.12 8.13 7.84 7.80 0.00 4.08 6.34 7.42
+PSP  6.73 4.59 7.55 6.73 7.08 4.08 0.00 6.88 6.36
+BP   7.18 7.22 6.90 7.28 6.96 6.34 6.88 0.00 7.36
+D66  6.17 5.47 4.67 6.13 6.04 7.42 6.36 7.36 0.00</code></pre>
+</div>
+</div>
+<p>The optimal configuration found by <code>smacof</code> is</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>       [,1]   [,2]
+ [1,]  1.78  3.579
+ [2,] -1.46  2.297
+ [3,]  3.42 -2.776
+ [4,]  3.30  1.837
+ [5,]  3.84  0.308
+ [6,] -5.09 -0.044
+ [7,] -3.79  2.132
+ [8,] -2.86 -4.318
+ [9,]  0.86 -3.015</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="inverse_files/figure-html/poldistconfplot-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>De Gruijter Configuration</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The maximum and minimum dissimilarities in <span class="math inline">\(\Delta(X,W)\cap\Delta_+\)</span> are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     KVP   PvdA  VVD   ARP   CHU   CPN   PSP   BP    D66  
+KVP    0.0  32.6   9.7   9.3  24.6  24.3  11.7  18.9  15.2
+PvdA  32.6   0.0  25.7  36.9  20.7  34.1  36.1  29.7  22.2
+VVD    9.7  25.7   0.0  17.4  32.0  34.4  22.3  23.5  20.4
+ARP    9.3  36.9  17.4   0.0  28.0  33.7  25.6  28.9  23.0
+CHU   24.6  20.7  32.0  28.0   0.0  20.8  31.9  33.3  26.3
+CPN   24.3  34.1  34.4  33.7  20.8   0.0  24.9  30.7  31.8
+PSP   11.7  36.1  22.3  25.6  31.9  24.9   0.0  23.7  27.7
+BP    18.9  29.7  23.5  28.9  33.3  30.7  23.7   0.0  35.0
+D66   15.2  22.2  20.4  23.0  26.3  31.8  27.7  35.0   0.0</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     KVP   PvdA  VVD   ARP   CHU   CPN   PSP   BP    D66  
+KVP   0.00  3.48  0.00  0.00  2.34  0.00  0.00  0.00  0.00
+PvdA  3.48  0.00  0.00  0.00  0.00  0.00  0.93  0.00  0.00
+VVD   0.00  0.00  0.00  0.00  0.83  0.00  0.00  0.00  0.00
+ARP   0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00
+CHU   2.34  0.00  0.83  0.00  0.00  0.00  0.00  0.00  0.00
+CPN   0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00
+PSP   0.00  0.93  0.00  0.00  0.00  0.00  0.00  0.00  0.00
+BP    0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00
+D66   0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</code></pre>
+</div>
+</div>
+</section>
+<section id="second-order-inverse-mds" class="level2" data-number="24.6">
+<h2 data-number="24.6" class="anchored" data-anchor-id="second-order-inverse-mds"><span class="header-section-number">24.6</span> Second Order Inverse MDS</h2>
+<p>As we mentioned many times before, stationary values are not necessarily local minima. It is necessary for a local minimum that the stationary equations are satisfied, but it is also necessary that at a solution of the stationary equations the Hessian is positive semi-definite. Thus it becomes interesting to find the dissimilarities in <span class="math inline">\(\Delta(W,X)\cap\Delta_+\)</span> for which the Hessian is positive semi-definite. Define <span class="math display">\[
+\Delta_H(W,X):=\{\Delta\mid\mathcal{D}^2\sigma(X)\gtrsim 0\}.
+\]</span> We can now study <span class="math inline">\(\Delta(W,X)\cap\Delta_H(W,X)\)</span> or <span class="math inline">\(\Delta(W,X)\cap\Delta_H(W,X)\cap\Delta_+\)</span>.</p>
+<div class="cell">
+<pre class="theorem cell-code"><code>$\Delta_H(W,X)$ is a convex non-polyhedral set.</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>In MDS the Hessian is <span class="math inline">\(2(V-H(x,W,\Delta))\)</span>, where <span class="math display">\[\begin{equation}
+H(x,W,\Delta):=\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}\frac{\delta_{ij}}{d_{ij}(x)}\left\{A_{ij}-\frac{A_{ij}xx'A_{ij}}{x'A_{ij}x}\right\}.
+\end{equation}\]</span> Here we use <span class="math inline">\(x:=\mathbf{vec}(X)\)</span>, and both <span class="math inline">\(A_{ij}\)</span> and <span class="math inline">\(V\)</span> are direct sums of <span class="math inline">\(p\)</span> copies of our previous <span class="math inline">\(A_{ij}\)</span> and <span class="math inline">\(V\)</span> (<span class="citation" data-cites="deleeuw_groenen_mair_E_16c">De Leeuw, Groenen, and Mair (<a href="references.html#ref-deleeuw_groenen_mair_E_16c" role="doc-biblioref">2016c</a>)</span>). The Hessian is linear in <span class="math inline">\(\Delta\)</span>, which means that requiring it to be positive semi-definite defines a convex non-polyhedral set. The convex set is defined by the infinite system of linear inequalities <span class="math inline">\(y'H(x,W,\Delta)y\geq 0\)</span>.</p>
+</div>
+<p>In example 3 the smallest eigenvalues of the Hessian at the 42 vertices are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]   0.00000   0.00000   0.00000  -5.86238   0.00000  -2.96688   0.00000
+ [8]  -2.96688  -4.47894  -4.47894  -5.71312  -2.96688   0.00000  -5.00453
+[15]   0.00000  -5.86238   0.00000 -12.00000   0.00000  -5.86238  -5.71312
+[22]  -5.00453  -5.86238  -2.96688  -5.71312  -4.47894  -5.00453  -5.86238
+[29]  -5.00453  -5.00453  -2.96688   0.00000  -5.86238  -4.47894  -5.71312
+[36]  -2.96688  -5.00453  -5.71312  -5.71312  -4.47894   0.00000  -4.47894</code></pre>
+</div>
+</div>
+<p>and thus there are at most 11 vertices corresponding with local minima.</p>
+<p>The next step is to refine the polyhedral approximation to <span class="math inline">\(\Delta(W,X)\cap\Delta_H(W,X)\cap\Delta_+\)</span> by using cutting planes. We add linear inequalities to the H-representation by using the eigenvectors corresponding to the smallest eigenvalues of all those vertices for which this smallest eigenvalue is negative. Thus, if the eigenvector is <span class="math inline">\(y\)</span>, we would add the inequality <span class="math display">\[\begin{equation}
+\mathop{\sum\sum}_{1\leq i&lt;j\leq n}\zeta_{ij}(w_{ij}-k_i'Sk_j)\geq 0,
+\end{equation}\]</span> where <span class="math display">\[
+\zeta_{ij}:=y'\left(A_{ij}-\frac{A_{ij}xx'A_{ij}}{x'A_{ij}x}\right)y.
+\]</span> It is clear, however, that adding a substantial number of linear inequalities will inevitably lead to a very large number of potential extreme points. We proceed conservatively by cutting off only the solution with the smallest negative eigenvalue in computing the new V representation, using our function <code>bruteForceOne()</code>.</p>
+</section>
+<section id="inverse-fds" class="level2" data-number="24.7">
+<h2 data-number="24.7" class="anchored" data-anchor-id="inverse-fds"><span class="header-section-number">24.7</span> Inverse FDS</h2>
+<p>A configuration <span class="math inline">\(X\)</span> is a <em>full dimensional scaling</em> or <em>FDS</em> solution (<span class="citation" data-cites="deleeuw_groenen_mair_E_16e">De Leeuw, Groenen, and Mair (<a href="references.html#ref-deleeuw_groenen_mair_E_16e" role="doc-biblioref">2016a</a>)</span>) if <span class="math inline">\((V-B(X))X=0\)</span> and <span class="math inline">\(V-B(X)\)</span> is positive semi-definite. In that case <span class="math inline">\(X\)</span> actually provides the global minimum of stress. The <em>inverse FDS</em> or <em>iFDS</em> problem is to find all <span class="math inline">\(\Delta\)</span> such that a given <span class="math inline">\(X\)</span> is the FDS solution.</p>
+<div class="cell">
+<pre class="theorem cell-code"><code>$\Delta\in\Delta_F(W,X)$ if and only if there is a positive semi-definite $S$ such that for all $i\not= j$ 
+\begin{equation}
+\delta_{ij}=d_{ij}(X)(1-\frac{1}{w_{ij}}k_i'Sk_j),
+\end{equation}
+Thus $\Delta_F(W,X)$ is a non-polyhedral convex set, closed under linear combinations with coefficients that add up to one.</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Of course <span class="math inline">\(\Delta_F(W,X)\subseteq\Delta(W,X)\)</span>. Thus <span class="math inline">\(V-B(X)=KSK'\)</span> for some <span class="math inline">\(S\)</span>, and <span class="math inline">\(XX'\)</span> and <span class="math inline">\(V-B(X)\)</span> must both be positive semi-definite, with complementary null spaces.</p>
+</div>
+<p>We reanalyze our second example, with the four points equally spaced on the line, requiring a positive semi-definite <span class="math inline">\(S\)</span>. We start with the original 7 vertices, for which the minimum eigenvalues of <span class="math inline">\(S\)</span> are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -4.000 -2.899 -1.708 -3.333  8.000 -1.708 -2.899</code></pre>
+</div>
+</div>
+<p>If the minimum eigenvalue is negative, with eigenvector <span class="math inline">\(y\)</span>, we add the constraints <span class="math inline">\(y'Sy\geq 0\)</span>. This leads to 11 vertices with minimum eigenvalues</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  8.0000 -0.0355  0.0000 -0.7911 -0.3834 -0.3834 -0.0355 -0.0853 -0.0853
+[10] -0.7911  0.0000</code></pre>
+</div>
+</div>
+<p>We see that the negative eigenvalues are getting smaller. Repeating the procedure of adding constraints based on negative eigenvalues three more times gives 19, 37, and 79 vertices, with corresponding minimum eigenvalues</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  8.000000 -0.000021  0.000000 -0.209852 -0.202322 -0.085642 -0.085642
+ [8] -0.000021 -0.106132 -0.018912 -0.008051 -0.023967 -0.008051 -0.023967
+[15] -0.106132 -0.018912 -0.209852 -0.202322  0.000000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  8.000000 -0.000021  0.000000 -0.056872 -0.053562 -0.045307 -0.062028
+ [8] -0.020853 -0.020853 -0.000021 -0.028793 -0.004490 -0.001925 -0.006410
+[15] -0.001925 -0.006410 -0.028793 -0.004490 -0.000005 -0.002104 -0.021934
+[22] -0.024355 -0.021934 -0.024355 -0.000005 -0.002104 -0.004975 -0.005596
+[29] -0.005596 -0.004975 -0.002318 -0.002318 -0.056872 -0.053562 -0.045307
+[36] -0.062028  0.000000</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  8.000000 -0.000021  0.000000 -0.015026 -0.013698 -0.010861 -0.017838
+ [8] -0.013830 -0.013426 -0.012084 -0.013998 -0.018140 -0.005180 -0.005180
+[15] -0.000021 -0.007568 -0.001096 -0.000471 -0.001662 -0.000471 -0.001662
+[22] -0.007568 -0.001096 -0.000005 -0.000001 -0.000538 -0.000488 -0.005588
+[29] -0.005886 -0.005588 -0.005886 -0.000005 -0.000001 -0.000538 -0.000488
+[36] -0.001278 -0.001355 -0.001355 -0.001278 -0.000001 -0.000649 -0.000594
+[43] -0.005244 -0.005378 -0.005244 -0.005378 -0.000001 -0.000649 -0.000594
+[50] -0.006838 -0.006293 -0.001150 -0.001210 -0.000492 -0.000514 -0.000566
+[57] -0.001545 -0.001444 -0.000492 -0.000514 -0.000566 -0.001545 -0.001444
+[64] -0.006838 -0.006293 -0.001150 -0.001210 -0.000001 -0.000001 -0.015026
+[71] -0.013698 -0.010861 -0.017838 -0.013830 -0.013426 -0.012084 -0.013998
+[78] -0.018140  0.000000</code></pre>
+</div>
+</div>
+<p>It should be noted that the last step already takes an uncomfortable number of minutes to compute. Although the number of vertices goes up quickly, the diameter of the polygon (the maximum distance between two vertices) slowly goes down and will eventually converge to the diameter of <span class="math inline">\(\Delta_F(W,X)\cap\Delta_+\)</span>. Diameters in subsequent steps are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.657 5.086 5.065 5.061 5.060</code></pre>
+</div>
+</div>
+</section>
+<section id="multiple-solutions" class="level2" data-number="24.8">
+<h2 data-number="24.8" class="anchored" data-anchor-id="multiple-solutions"><span class="header-section-number">24.8</span> Multiple Solutions</h2>
+<p>If <span class="math inline">\(X_1,\cdots,X_s\)</span> are configurations with the same number of points, then the intersection <span class="math inline">\(\left\{\bigcap_{r=1}^s\Delta(W,X_r)\right\}\cap\Delta_+\)</span> is again a polygon, i.e.&nbsp;a closed and bounded convex polyhedron (which may be empty). If <span class="math inline">\(\Delta\)</span> is in this intersection then <span class="math inline">\(X_1,\cdots,X_s\)</span> are all solutions of the stationary equations for this <span class="math inline">\(\Delta\)</span> and <span class="math inline">\(W\)</span>.</p>
+<p>Let’s look at the case of two configurations <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>. We must find vectors <span class="math inline">\(t_1\)</span> and <span class="math inline">\(t_2\)</span> such that <span class="math display">\[
+d_1\circ(e-w^\dagger\circ G_1t_1)=d_2\circ(e-w^\dagger\circ G_2t_2).
+\]</span> If <span class="math inline">\(H_1:=\mathbf{diag}(d_1\circ w^\dagger)G_1\)</span> and <span class="math inline">\(H_2:=\mathbf{diag}(d_2\circ w^\dagger)G_2\)</span> then this can be written as <span class="math display">\[
+\begin{bmatrix}H_1&amp;-H_2\end{bmatrix}\begin{bmatrix}t_1\\t_2\end{bmatrix}=d_1-d_2
+\]</span> This is a system of linear equations in <span class="math inline">\(t_1\)</span> and <span class="math inline">\(t_2\)</span>. If it is solvable we can intersect it with the convex sets <span class="math inline">\(G_1t_1\leq w\)</span> and <span class="math inline">\(G_2t_2\leq w\)</span> to find the non-negative dissimilarity matrices <span class="math inline">\(\Delta\)</span> for which both <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> are stationary.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>$delta1
+         [,1]
+[1,] 1.464102
+[2,] 1.464102
+[3,] 1.464102
+[4,] 1.464102
+[5,] 1.464102
+[6,] 1.464102
+
+$delta2
+         [,1]
+[1,] 1.464102
+[2,] 1.464102
+[3,] 1.464102
+[4,] 1.464102
+[5,] 1.464102
+[6,] 1.464102
+
+$res
+[1] 1.049631e-15
+
+$rank
+[1] 2</code></pre>
+</div>
+</div>
+<p>As a real simple example, suppose <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are four by two. They both have three points in the corners of an equilateral triangle, and one point in the centroid of the other three. In <span class="math inline">\(X\)</span> the fourth point is in the middle, in <span class="math inline">\(Y\)</span> the first point. The only solution to the linear equations is the matrix with all dissimilarities equal.</p>
+<p>For a much more complicated example we can choose the De Gruijter data. We use <code>smacof</code> to find two stationary points in two dimensions. The matrices <span class="math inline">\(G_1\)</span> and <span class="math inline">\(G_2\)</span> are <span class="math inline">\(36\times 21\)</span>, and thus <span class="math inline">\(H:=(H_1\mid -H_2)\)</span> is <span class="math inline">\(36\times 42\)</span>. The solutions of the linear system <span class="math inline">\(Ht=d_1-d_2\)</span> are of the form <span class="math inline">\(t_0-Lt\)</span>, with <span class="math inline">\(t_0\)</span> an arbitrary solution and <span class="math inline">\(L\)</span> a <span class="math inline">\(42\times 6\)</span> basis for the space of <span class="math inline">\(Ht=0\)</span>. To find the non-negative solutions we can use the H representation <span class="math inline">\(Lv\leq t_0\)</span>, and then compute the V representation, realizing of course that we can choose 6 rows from 42 rows in 5245786 ways.</p>
+</section>
+<section id="minimizing-istress" class="level2" data-number="24.9">
+<h2 data-number="24.9" class="anchored" data-anchor-id="minimizing-istress"><span class="header-section-number">24.9</span> Minimizing iStress</h2>
+<p>The IMDS approach can also be used to construct an alternative MDS loss function. We call it <em>iStress</em>, defined as</p>
+<p><span class="math display">\[
+\sigma_\iota(X,W,\Delta):=\min_{\tilde\Delta\in\Delta(W,X)\cap\Delta_+}\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}-\tilde\delta_{ij})^2.
+\]</span></p>
+<p>Minimizing iStress means minimizing the projection distance between the observed dissimilarity matrix and the moving convex set of non-negative dissimilarity matrices for which <span class="math inline">\(X\)</span> satisfies the stationary equations. The convex set is moving, because it depends on <span class="math inline">\(X\)</span>. For each <span class="math inline">\(X\)</span> we have to solve the IMDS problem of finding <span class="math inline">\(\Delta(X,W)\cap\Delta_+\)</span>, and then solve the quadratic programming problem that computes the projection.</p>
+<div class="cell">
+<pre class="theorem cell-code"><code>$\min_X\sigma_\iota(X,W,\Delta)=0$ and the minimum is attained at all $X$ with $(V-B(X))X=0$.</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>If <span class="math inline">\(X\)</span> is a stationary point of stress then <span class="math inline">\(\Delta\in\mathfrak{D}(X)\cap\mathfrak{D}_+\)</span> and thus iStress is zero. Conversely, if iStress is zero then <span class="math inline">\(\Delta\in\mathfrak{D}(X)\cap\mathfrak{D}_+\)</span> and <span class="math inline">\(X\)</span> is a stationary point of stress.</p>
+</div>
+<p>Minimizing iStress may not be a actual practical MDS method, but it has some conceptual interest, because it provides another way of looking at the relationship of MDS and IMDS.</p>
+<p>We use the De Gruijter data for an example of iStress minimization. We use <code>optim</code> from base <code>R</code>, and the <code>quadprog</code> package of <span class="citation" data-cites="turlach_weingessel_13">(<a href="references.html#ref-turlach_weingessel_13" role="doc-biblioref"><strong>turlach_weingessel_13?</strong></a>)</span>. Two different solutions are presented, the first with iterations starting at the classical MDS solution, the second starting at the <code>smacof</code> solution. In both cases iStress converges to zero, i.e.&nbsp;the configurations converge to a solution of the stationary equations for stress, and in the <code>smacof</code> case the initial solution already has stress equal to zero.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>initial  value 106.624678 
+iter  10 value 0.205734
+iter  20 value 0.025163
+iter  30 value 0.018427
+iter  40 value 0.000116
+iter  50 value 0.000007
+iter  60 value 0.000000
+final  value 0.000000 
+converged</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>initial  value 0.000000 
+iter  10 value 0.000000
+iter  20 value 0.000000
+final  value 0.000000 
+converged</code></pre>
+</div>
+</div>
+<hr>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="inverse_files/figure-html/istressplot-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>De Gruijter Minimim iStress Configuration</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="order-three" class="level2" data-number="24.10">
+<h2 data-number="24.10" class="anchored" data-anchor-id="order-three"><span class="header-section-number">24.10</span> Order three</h2>
+<p>We will now consider, in some detail, MDS of a dissimilarity matrix of order three.. The plan is as follows. Our MDS problem is of order three, i.e.&nbsp;there are only three objects, and three dissimilarities between them. Suppose, for simplicity, that all weights are one. At a stationary point of we have <span class="math inline">\(B(X)X=3X\)</span>. Thus the <span class="math inline">\(B\)</span> matrix has an eigenvalue equal to <span class="math inline">\(3\)</span> (in addition to having an eigenvalue equal to zero).</p>
+<p>!! Not just eval 3, but also evecs X</p>
+<p>If there are only three objects we can look at the set of doubly-centered matrices of order three with an eigenvalue equal to three. If three is the largest eigenvalue then the local minimum is global, if it is the second largest eigenvalue then it may or may not be global. If <span class="math inline">\(B\)</span> has two eigenvalues equal to three, then <span class="math inline">\(B=3J\)</span> and the two eigenvectors give the unique global minimum in two dimensions (an equilateriaL triangle).</p>
+<p>A symmetric doubly-centered matrix of order three is a linear combination <span class="math inline">\(B=\alpha A_{12}+\beta A_{13}+\gamma A_{23}\)</span> of three diff matrices (@ref(#propmatrix)), with <span class="math inline">\(\alpha, \beta, \gamma\)</span> all non-negative. Thus</p>
+<p><span class="math display">\[\begin{equation}
+B=\begin{bmatrix}
+\alpha+\beta&amp;-\alpha&amp;-\beta\\
+-\alpha&amp;\alpha+\gamma&amp;-\gamma\\
+-\beta&amp;-\gamma&amp;\beta+\gamma
+\end{bmatrix}.
+(\#eq:bgeneral)
+\end{equation}\]</span></p>
+<p><span class="math inline">\(B\)</span> has one eigenvalue equal to zero, and two real non-negative eigenvalues <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span>. The characteristic equation is <span class="math inline">\(f(\lambda):=\lambda(\lambda^2-2\tau\lambda+3\eta)=0,\)</span> where <span class="math inline">\(\tau:=\alpha+\beta+\gamma\)</span> and <span class="math inline">\(\eta:=\alpha\beta+\alpha\gamma+\beta\gamma.\)</span></p>
+<p>Thus we have at least one eigenvalue equal to three if <span class="math inline">\(f(3)=0\)</span>, i.e.&nbsp;<span class="math inline">\(2\tau-\eta=3\)</span>. Both eigenvalues are equal to three if <span class="math inline">\(\eta=\tau=3\)</span>, which means <span class="math inline">\(\alpha=\beta=\gamma=1\)</span> and <span class="math inline">\(B=3J\)</span>.</p>
+<p>The two eigenvalues are <span class="math inline">\(\tau\pm\sqrt{\tau^2-3\eta}\)</span> Note that <span class="math inline">\(\tau^2-3\eta\geq 0\)</span> with equality if and only if <span class="math inline">\(\tau=\eta=3\)</span> if and only if <span class="math inline">\(\alpha=\beta=\gamma=1\)</span>. This easily follows from <span class="math inline">\(\tau^2-3\eta=\alpha^2+\beta^2+\gamma^2-\eta\)</span>, while <span class="math inline">\(\eta=\alpha\beta+\alpha\gamma+\beta\gamma\leq\alpha^2+\beta^2+\gamma^2\)</span> by applying AM/GM three times. Also note that if two out of the three of <span class="math inline">\(\alpha,\beta,\gamma\)</span> are zero then <span class="math inline">\(\eta=0\)</span> and thus <span class="math inline">\(\lambda_1=2\tau\)</span> and <span class="math inline">\(\lambda_2=0\)</span>.</p>
+<p>Since <span class="math inline">\(\lambda_1\geq\lambda_2\)</span> we have the two possibilities <span class="math inline">\(\lambda_2\leq\lambda_1=3\)</span> and <span class="math inline">\(3\geq\lambda_1\geq\lambda_2=3\)</span> Now <span class="math inline">\(\lambda_1=3\)</span> iff <span class="math inline">\(\sqrt{\tau^2-3\eta}=3-\tau\)</span> iff <span class="math inline">\(\tau\leq 3\)</span> and <span class="math inline">\(2\tau-\eta=3\)</span>. And <span class="math inline">\(\lambda_2=3\)</span> iff <span class="math inline">\(\sqrt{\tau^2-3\eta}=\tau-3\)</span> iff <span class="math inline">\(\tau\geq 3\)</span> and <span class="math inline">\(2\tau-\eta=3\)</span>. It also follows that it is necessary for <span class="math inline">\(\lambda=3\)</span> that <span class="math inline">\(\tau\geq\frac32\)</span>.</p>
+<p>If we have <span class="math inline">\((\tau,\eta)\)</span> we can solve for <span class="math inline">\(\alpha,\beta\)</span> and <span class="math inline">\(\gamma\)</span> by <span class="math display">\[
+\alpha+\beta+\gamma=\tau,\\
+\alpha^2+\beta^2+\gamma^2=\omega
+\]</span> Thus the set of <span class="math inline">\((\alpha,\beta,\gamma)\)</span> corresponding with <span class="math inline">\(\tau,\eta\)</span> is the intersection of a sphere and an equilateral triangle in the non-negative orthant of <span class="math inline">\(\mathbb{R}^3\)</span>.</p>
+<p><span class="math display">\[
+\gamma=\tau-\alpha-\beta\\
+\alpha^2+\beta^2-\tau\alpha-\tau\beta+\alpha\beta=-\eta
+\]</span></p>
+<p>ellipse with center <span class="math inline">\(\frac13\tau e\)</span> and radius <span class="math inline">\(\frac13(\tau-3)^2\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">imdsSolver</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="inverse_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">imdsSolver</span>(<span class="dv">3</span><span class="sc">/</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="inverse_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">imdsSolver</span>(<span class="dv">3</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span> (<span class="dv">1</span>, <span class="dv">1</span>, <span class="at">col =</span> <span class="st">"RED"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="inverse_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">imdsSolver</span>(<span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="inverse_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="order-four" class="level2" data-number="24.11">
+<h2 data-number="24.11" class="anchored" data-anchor-id="order-four"><span class="header-section-number">24.11</span> Order Four</h2>
+<p><span class="math display">\[
+B=\alpha A_{12}+\beta A_{13}+\gamma A_{14}+\delta A_{23}+\epsilon A_{24}+\phi A_{34}
+\]</span> <span class="math display">\[
+B=\begin{bmatrix}
+\alpha+\beta+\gamma&amp;-\alpha&amp;-\beta&amp;-\gamma\\
+-\alpha&amp;\alpha+\delta+\epsilon&amp;-\delta&amp;-\epsilon\\
+-\beta&amp;-\delta&amp;\beta+\delta+\phi&amp;-\phi\\
+-\gamma&amp;-\epsilon&amp;-\phi&amp;\gamma+\epsilon+\phi
+\end{bmatrix}.
+\]</span> The characteristic equation is <span class="math display">\[
+f(\lambda)=\lambda(\lambda^3-2\tau\lambda^2+(3\eta+(\alpha\phi+\beta\epsilon+\gamma\delta))\lambda-Y).
+\]</span> <span class="math display">\[
+Z=\frac12\begin{bmatrix}
++1&amp;+1&amp;+1&amp;+1\\
++1&amp;+1&amp;-1&amp;-1\\
++1&amp;-1&amp;+1&amp;-1\\
++1&amp;-1&amp;-1&amp;+1
+\end{bmatrix}.
+\]</span></p>
+</section>
+<section id="sensitivity" class="level2" data-number="24.12">
+<h2 data-number="24.12" class="anchored" data-anchor-id="sensitivity"><span class="header-section-number">24.12</span> Sensitivity</h2>
+<p><span class="math display">\[
+\sigma(W,\Delta)=\min_X\sigma(X,W,\Delta)
+\]</span> <span class="math display">\[
+X(W,\Delta)=\mathop{\text{Argmin}}_X\sigma(X,W,D)
+\]</span> <span class="math display">\[
+\mathcal{D}_1\sigma(W,\Delta)=(\Delta-D(X(W,D)))^{(2)}
+\]</span></p>
+<p><span class="math display">\[
+\mathcal{D}_2\sigma(W,\Delta)=W*(\Delta-D(X(W,D)))
+\]</span></p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-avis_15" class="csl-entry" role="listitem">
+Avis, D. 2015. <em><span class="nocase">User’s Guide for lrs - Version 6.1</span></em>. <span>The Computational Geometry Lab at McGill</span>.
+</div>
+<div id="ref-berkelaar_15" class="csl-entry" role="listitem">
+Berkelaar, M. and others. 2015. <em><span class="nocase">lpSolve: Interface to ’Lp_solve’ v. 5.5 to Solve Linear/Integer Programs</span></em>.
+</div>
+<div id="ref-degruijter_67" class="csl-entry" role="listitem">
+De Gruijter, D. N. M. 1967. <span>“<span class="nocase">The Cognitive Structure of Dutch Political Parties in 1966</span>.”</span> Report E019-67. Psychological Institute, University of Leiden.
+</div>
+<div id="ref-deleeuw_C_05h" class="csl-entry" role="listitem">
+De Leeuw, J. 2005. <span>“<span>Unidimensional Scaling</span>.”</span> In <em>The Encyclopedia of Statistics in Behavioral Science</em>, edited by B. S. Everitt and D. Howell, 4:2095–97. New York, N.Y.: Wiley.
+</div>
+<div id="ref-deleeuw_U_12b" class="csl-entry" role="listitem">
+———. 2012. <span>“<span>On Inverse Multidimensional Scaling</span>.”</span> UCLA Department of Statistics. <a href="https://jansweb.netlify.app/publication/deleeuw-u-12-b/deleeuw-u-12-b.pdf">https://jansweb.netlify.app/publication/deleeuw-u-12-b/deleeuw-u-12-b.pdf</a>.
+</div>
+<div id="ref-deleeuw_groenen_mair_E_16e" class="csl-entry" role="listitem">
+De Leeuw, J., P. Groenen, and P. Mair. 2016a. <span>“Full-Dimensional Scaling.”</span> 2016. <a href="https://jansweb.netlify.app/publication/deleeuw-groenen-mair-e-16-e/deleeuw-groenen-mair-e-16-e.pdf">https://jansweb.netlify.app/publication/deleeuw-groenen-mair-e-16-e/deleeuw-groenen-mair-e-16-e.pdf</a>.
+</div>
+<div id="ref-deleeuw_groenen_mair_E_16f" class="csl-entry" role="listitem">
+———. 2016b. <span>“More on Inverse Multidimensional Scaling.”</span> 2016. <a href="https://jansweb.netlify.app/publication/deleeuw-groenen-mair-e-16-f/deleeuw-groenen-mair-e-16-f.pdf">https://jansweb.netlify.app/publication/deleeuw-groenen-mair-e-16-f/deleeuw-groenen-mair-e-16-f.pdf</a>.
+</div>
+<div id="ref-deleeuw_groenen_mair_E_16c" class="csl-entry" role="listitem">
+———. 2016c. <span>“<span class="nocase">Second Derivatives of rStress, with Applications</span>.”</span> 2016. <a href="https://jansweb.netlify.app/publication/deleeuw-groenen-mair-e-16-c/deleeuw-groenen-mair-e-16-c.pdf">https://jansweb.netlify.app/publication/deleeuw-groenen-mair-e-16-c/deleeuw-groenen-mair-e-16-c.pdf</a>.
+</div>
+<div id="ref-deleeuw_groenen_mair_E_16g" class="csl-entry" role="listitem">
+———. 2016d. <span>“Singularities and Zero Distances in Multidimensional Scaling.”</span> 2016.
+</div>
+<div id="ref-goldman_56" class="csl-entry" role="listitem">
+Goldman, A. J. 1956. <span>“<span class="nocase">Resolution and Separation Theorems for Polyhedral Convex Sets</span>.”</span> In <em>Linear Inequalities and Related Systems</em>, edited by Kuhn H. W. and A. W. Tucker, 41–51. Annals of Mathematics Studies 38. Princeton University Press.
+</div>
+<div id="ref-deleeuw_groenen_A_97" class="csl-entry" role="listitem">
+<span>“<span>Inverse Multidimensional Scaling</span>.”</span> 2007. <em>Journal of Classification</em> 14: 3–21.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./altls.html" class="pagination-link" aria-label="Alternative Least Squares Loss">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Alternative Least Squares Loss</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./stability.html" class="pagination-link" aria-label="Stability of MDS Solutions">
+        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Stability of MDS Solutions</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

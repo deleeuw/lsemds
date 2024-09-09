@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>21&nbsp; sstress – Least Squares Euclidean Multidimensional Scaling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./rstress.html" rel="next">
+<link href="./nonpairs.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+</head><body class="nav-sidebar floating">.greybox {
+  padding: 1em;
+  background: white;
+  color: black;
+  border: 2px solid orange;
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sstress.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">sstress</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Least Squares Euclidean Multidimensional Scaling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Note</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation and Reserved Symbols</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./properties.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Properties of Stress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spaces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stress Spaces</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classical Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./minimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Minimization of Basic Stress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acceleration of Convergence</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonmetric.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Nonmetric MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interval MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./polynomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Polynomial MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ordinal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Ordinal MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./splinical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Splinical MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unidimensional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./full.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Full-dimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unfolding.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unfolding</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./constrained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Constrained Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./individual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Individual Differences</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./asymmetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Asymmetry in MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nominal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Nominal MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonordinal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Nonmonotonic MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonpairs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Compound Objects</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sstress.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">sstress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rstress.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">fstress and rstress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./altls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Alternative Least Squares Loss</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inverse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Inverse Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Stability of MDS Solutions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./global.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">In Search of Global Minima</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./backmatter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">(APPENDIX) Appendices</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sstress-and-stress" id="toc-sstress-and-stress" class="nav-link active" data-scroll-target="#sstress-and-stress"><span class="header-section-number">21.0.1</span> sstress and stress</a></li>
+  <li><a href="#decomposition" id="toc-decomposition" class="nav-link" data-scroll-target="#decomposition"><span class="header-section-number">21.0.2</span> Decomposition</a></li>
+  <li><a href="#full-dimensional-sstress" id="toc-full-dimensional-sstress" class="nav-link" data-scroll-target="#full-dimensional-sstress"><span class="header-section-number">21.0.3</span> Full-dimensional sstress</a></li>
+  <li><a href="#minimizing-sstress" id="toc-minimizing-sstress" class="nav-link" data-scroll-target="#minimizing-sstress"><span class="header-section-number">21.0.4</span> Minimizing sstress</a></li>
+  <li><a href="#bounds-for-sstress" id="toc-bounds-for-sstress" class="nav-link" data-scroll-target="#bounds-for-sstress"><span class="header-section-number">21.0.5</span> Bounds for sstress</a></li>
+  <li><a href="#strain" id="toc-strain" class="nav-link" data-scroll-target="#strain"><span class="header-section-number">21.1</span> strain</a>
+  <ul class="collapse">
+  <li><a href="#unweighted" id="toc-unweighted" class="nav-link" data-scroll-target="#unweighted"><span class="header-section-number">21.1.1</span> Unweighted</a></li>
+  <li><a href="#bailey-gower" id="toc-bailey-gower" class="nav-link" data-scroll-target="#bailey-gower"><span class="header-section-number">21.1.2</span> Bailey-Gower</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sstress" class="quarto-section-identifier"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">sstress</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>s# Sstress and strain {#chsstressstrain}</p>
+<p><span class="citation" data-cites="takane_young_deleeuw_A_77">Takane, Young, and De Leeuw (<a href="references.html#ref-takane_young_deleeuw_A_77" role="doc-biblioref">1977</a>)</span> gave <span class="math inline">\(\sigma_2\)</span> the name <em>sstress</em>. Thus sstress is defined as</p>
+<p><span class="math display">\[
+\sigma_2(X):=\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}^2-d_{ij}^2(X))^2
+\]</span></p>
+<p>On the space of configurations sstress is mathematically much better behaved as stress. It is a non-negative multivariate polynomial of degree four, actually a sum-of-squares or SOS polynomial (ref).</p>
+<p>It is everywhere infinitely many times differentiable everywhere and, in principle at least, we can compute all real-valued configurations where the derivatives of sstress vanish by algebraic methods. That includes all local minima, and thus also the global minimum. Unfortunately in almost all MDS applications the number of variables is too large to apply the usual algebraic methods.</p>
+<p>nonnegative polynomials of degree four – general algebra</p>
+<section id="sstress-and-stress" class="level3" data-number="21.0.1">
+<h3 data-number="21.0.1" class="anchored" data-anchor-id="sstress-and-stress"><span class="header-section-number">21.0.1</span> sstress and stress</h3>
+<p>Clearly configurations with small stress will tend to have small sstress, and vice versa.</p>
+<p>weighting residuals – fitting large dissimilarities</p>
+<p><span class="math display">\[
+\sum d_{ij}^2(\delta_{ij}^2-d_{ij}^2)=0
+\]</span></p>
+<p>We can write sstress as</p>
+<p><span class="math display">\[\begin{equation}
+\sigma_2(X)=\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}+d_{ij}(X))^2(\delta_{ij}-d_{ij}(X))^2.
+\end{equation}\]</span></p>
+<p>Thus if the <span class="math inline">\(d_{ij}(X)\)</span> provide a good fit to the <span class="math inline">\(\delta_{ij}\)</span> we have the approximation</p>
+<p><span class="math display">\[\begin{equation}
+\sigma_2(X)\approx 4\mathop{\sum\sum}_{1\leq i&lt;j\leq  n}w_{ij}^{\ }\delta_{ij}^2(\delta_{ij}-d_{ij}(X))^2
+(\#eq:sstressapp)
+\end{equation}\]</span></p>
+<p>Since <span class="math inline">\(\mathcal{D}f(\delta)=2\delta\)</span> in this case, @ref(eq:sstressapp) also follows from @ref(eq:wfstress).</p>
+<p>Now</p>
+<p><span class="math display">\[\begin{equation}
+\frac{\sigma_2(X)}{\sigma(X)}=\frac{\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}+d_{ij}(X))^2(\delta_{ij}-d_{ij}(X))^2}{\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}^{\ }(\delta_{ij}-d_{ij}(X))^2}.
+\end{equation}\]</span></p>
+<p>This is a weighted average of the quantities <span class="math inline">\((\delta_{ij}+d_{ij}(X))^2\)</span>, and thus</p>
+<p><span class="math display">\[\begin{equation}
+4\{\min(\delta_{ij}+d_{ij}(X))\}^2\sigma(X)\leq\sigma_2(X)\leq 4\{\max(\delta_{ij}+d_{ij}(X))\}^2\sigma(X).
+\end{equation}\]</span></p>
+</section>
+<section id="decomposition" class="level3" data-number="21.0.2">
+<h3 data-number="21.0.2" class="anchored" data-anchor-id="decomposition"><span class="header-section-number">21.0.2</span> Decomposition</h3>
+<p><span class="math display">\[\sigma_2(X)=1-2\rho_2(X)+\eta_2^2(X)\]</span> <span class="math display">\[\sigma_2(\alpha X)=1-2\alpha^2\rho_2(X)+\alpha^4\eta_2^2(X)\]</span> At a minimum <span class="math inline">\(\rho_2(X)=\eta_2^2(X)\)</span> and thus <span class="math inline">\(\sigma(X)=1-\eta_2^2(X)\)</span>, which implies <span class="math inline">\(\eta_2(X)\leq 1\)</span>.</p>
+<p>Thus minimizing <span class="math inline">\(\sigma_2\)</span> means maximizing <span class="math inline">\(\rho_2\)</span> over <span class="math inline">\(\eta_2(X)\leq 1\)</span>, which is the same thing as minimizing <span class="math inline">\(\eta_2\)</span> over <span class="math inline">\(\rho_2(X)\geq 1\)</span>. Both are reverse convex problems.</p>
+<p><span class="math display">\[
+\eta_2(X)=\sqrt{\sum\sum w_{ij}d_{ij}^4(X)}\geq\frac{1}{\sqrt{\sum\sum w_{ij}d_{ij}^4(Y)}}\sum\sum w_{ij}d_{ij}^2(Y)d_{ij}^2(X)
+\]</span> Thus maximizing <span class="math inline">\(\rho_2\)</span> with <span class="math inline">\(\rho_2(X)=\text{tr}\ X'B_0X\)</span> over <span class="math inline">\(\text{tr}\ X'B_2(Y)X\leq 1\)</span> for all <span class="math inline">\(Y\)</span>.</p>
+<p>At a local minimum partitioning</p>
+</section>
+<section id="full-dimensional-sstress" class="level3" data-number="21.0.3">
+<h3 data-number="21.0.3" class="anchored" data-anchor-id="full-dimensional-sstress"><span class="header-section-number">21.0.3</span> Full-dimensional sstress</h3>
+<p>Theorem: The set of squared Euclidean distance matrices between <span class="math inline">\(n\)</span> points <span class="math inline">\(\mathfrak{D}:=\{D\mid D=D^{(2)}(X)\}\)</span> is a closed convex cone.</p>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>It suffices to observe that <span class="math inline">\(\alpha D^{(2)}(X)=D^{(2)}(\sqrt(\alpha)X)\)</span> and <span class="math inline">\(D^{(2)}(X)+D^{(2)}(Y)=D^{(2)}(X\mid Y)\)</span>. Alternatively, <span class="math inline">\(\mathfrak{D}\)</span> is the intersection of two convex cones, and thus convex. The first cone are the hollow non-negative symmetric matrices and the second cone are the symmetric matrices <span class="math inline">\(D\)</span> for which <span class="math inline">\(-JDJ\gtrsim 0\)</span>.</p>
+</div>
+<p>Corollary: <span class="math display">\[\min_{D\in\mathfrak{D}}\ \mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}^2-d_{ij})^2\]</span> is a convex problem with a unique minimum.</p>
+<p>Polar cone</p>
+<p><span class="math display">\[
+\mathop{\sum\sum}_{1\leq i&lt;j\leq n} w_{ij}e_{ij}\text{tr}\ A_{ij}C\leq 0
+\]</span> for all <span class="math inline">\(C\gtrsim 0\)</span>. Thus we must have <span class="math inline">\(\mathop{\sum\sum}_{1\leq i&lt;j\leq n} w_{ij}e_{ij}A_{ij}\lesssim 0\)</span></p>
+<p><span class="math display">\[
+D\in\mathfrak{D},\\
+\Delta-D\in\mathfrak{D}^o\\
+\text{tr}\ W\times D(\Delta-D)=0
+\]</span></p>
+<p>What is the polar cone <span class="math inline">\(\mathfrak{D}^o\)</span></p>
+<p>Since <span class="math inline">\(d_{ij}^2=c_{ii}+c_{jj}-2c{ij}\)</span> it follows that <span class="math inline">\(\sigma_2\)</span> is a convex quadratic in <span class="math inline">\(C\)</span> and that minimizing <span class="math inline">\(\sigma_2\)</span> over <span class="math inline">\(C\gtrsim 0\)</span> is a convex problem, just as minimizing <span class="math inline">\(\sigma_1\)</span> over <span class="math inline">\(C\gtrsim 0\)</span> is.</p>
+<p>But difference –</p>
+<p><span class="math display">\[
+\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}^2-\text{tr}\ A_{ij}C)^2
+\]</span> <span class="math display">\[
+\mathcal{D}\sigma_2(C)=-2\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}^2-\text{tr}\ A_{ij}C)A_{ij}
+\]</span> <span class="math display">\[
+B_2(C):=\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}d_{ij}^2(C)A_{ij}
+\]</span></p>
+<p>Weights !! Polar cone !</p>
+<p><span class="math display">\[\begin{align}
+\begin{split}
+C&amp;\gtrsim 0,\\
+V_2-B_2(C)&amp;\gtrsim 0,\\
+\text{tr}\ C(V_2-B_2(C))=0.
+\end{split}
+\end{align}\]</span></p>
+<p>gower2 rank</p>
+</section>
+<section id="minimizing-sstress" class="level3" data-number="21.0.4">
+<h3 data-number="21.0.4" class="anchored" data-anchor-id="minimizing-sstress"><span class="header-section-number">21.0.4</span> Minimizing sstress</h3>
+<section id="alscal" class="level4" data-number="21.0.4.1">
+<h4 data-number="21.0.4.1" class="anchored" data-anchor-id="alscal"><span class="header-section-number">21.0.4.1</span> ALSCAL</h4>
+<p>The first published paper on sstress minimization, with detailed algorithm and computer program, was <span class="citation" data-cites="takane_young_deleeuw_A_77">Takane, Young, and De Leeuw (<a href="references.html#ref-takane_young_deleeuw_A_77" role="doc-biblioref">1977</a>)</span>. There are some historical precursors, but they are mostly in internal memos, and they usually did not come with software. The ALSCAL program (<span class="citation" data-cites="young_takane_lewyckyj_78b">Young, Takane, and Lewyckyj (<a href="references.html#ref-young_takane_lewyckyj_78b" role="doc-biblioref">1978b</a>)</span>) was widely distributed through SPSS and SAS and is still used regularly in various areas of research.</p>
+<p>In this section of the book we will discuss basic ALSCAL, i.e.&nbsp;the sstress version of basic MDS scaling. As usual, we generalize to weighted least squares, but for now we ignore the individual differences and the non-metric parts.</p>
+<p>It is also worth noting that in the original version of ALSCAL, from <span class="citation" data-cites="takane_young_deleeuw_A_77">Takane, Young, and De Leeuw (<a href="references.html#ref-takane_young_deleeuw_A_77" role="doc-biblioref">1977</a>)</span>, the configuration is fitted by an alternating least squares algorithm that changes all <span class="math inline">\(p\)</span> coordinates of each point simultaneously, and then cycles through the points. The minimization over coordinates is done with a safeguarded Newton-Raphson method. At the time I forcefully objected to this. Sstress is a <span class="math inline">\(p\)</span>-dimensional quartic, and because <span class="math inline">\(p\)</span> is usually small fiding the global minimum with algebraic methods is at least conceivable. But in terms of simplicity, it is much better to change a single coordinate at the time, meaning that one cycle consists of finding the global minimum of <span class="math inline">\(np\)</span> univariate quadrics. There is some acknowledgement of this in section 5 of <span class="citation" data-cites="takane_young_deleeuw_A_77">Takane, Young, and De Leeuw (<a href="references.html#ref-takane_young_deleeuw_A_77" role="doc-biblioref">1977</a>)</span>, but the paper is quite verbose and it can easily be overlooked. My understanding, based on <span class="citation" data-cites="young_takane_lewyckyj_78a">Young, Takane, and Lewyckyj (<a href="references.html#ref-young_takane_lewyckyj_78a" role="doc-biblioref">1978a</a>)</span>, is that later versions of ALSCAL did indeed adopt one-dimensional cyclic coordinate descent (CCD). And this is what we will discuss here.</p>
+<p>First note that sstress can be decomposed in the same way as stress. We have <span class="math display">\[\begin{equation}
+\sigma_2(X)=1-2\rho_2(X)+\eta_2^2(X)
+(\#eq:sstressdec)
+\end{equation}\]</span> with <span class="math display">\[\begin{align}
+\begin{split}
+\rho_2(X)&amp;:=\mathop{\sum\sum}_{1\leq i &lt; j\leq n} w_{ij}^{\ }\delta_{ij}^2d_{ij}^2(X),\\
+\eta_2^2(X)&amp;:=\mathop{\sum\sum}_{1\leq i &lt; j\leq n} w_{ij}^{\ }d_{ij}^4(X).
+\end{split}
+(\#eq:sstresstwo)
+\end{align}\]</span></p>
+<p>Both <span class="math inline">\(\rho_2\)</span> and <span class="math inline">\(\eta_2^2\)</span> are convex, <span class="math inline">\(\rho_2\)</span> is quadratic and <span class="math inline">\(\eta^2_2\)</span> is a quartic (in fact, a sum of squares of quadratics).</p>
+<p>In CCD we replace <span class="math inline">\(x_{ks}\)</span> by <span class="math inline">\(\tilde x_{ks}:=x_{ks}+\epsilon\)</span>. Or, in matrices, <span class="math inline">\(\tilde X:=X+\epsilon\ e_k^{\ }e_s'\)</span>. Only the <span class="math inline">\(d_{ij}^2(\tilde X)\)</span> with <span class="math inline">\(i=k\)</span> or <span class="math inline">\(j=k\)</span> differ from the corresponding <span class="math inline">\(d_{ij}(X)\)</span>. All these <span class="math inline">\(d_{ik}^2(\tilde X)\)</span> are now just a function of <span class="math inline">\(\epsilon\)</span> and thus we write <span class="math display">\[\begin{equation}
+d_{ik}^2(\epsilon):=d_{ik}^2(\tilde X)=d_{ik}^2(X)-2\epsilon u_i+\epsilon^2.
+(\#eq:ddeps)
+\end{equation}\]</span> where <span class="math inline">\(u_i:=x_{is}-x_{ks}\)</span>. Also <span class="math display">\[\begin{equation}
+d_{ik}^4(\epsilon)=d_{ij}^4(X)-4\epsilon u_i^{\ }d_{ik}^2(X)+2\epsilon^2(d_{ik}^2(X)+2 u_i^2)-4\epsilon^3u_i+\epsilon^4.
+(\#eq:ddddeps)
+\end{equation}\]</span> Combining @ref(eq:ddeps) and @ref(eq:ddddeps) with @ref(eq:sstressdec) gives <span class="math display">\[\begin{equation}
+\rho_2(\epsilon)=\rho_2(0)-2\epsilon\sum_{i=1}^n w_{ik}^{\ }\delta_{ik}^2u_i^{\ }+\epsilon^2\sum_{i=1}^n w_{ik}^{\ }\delta_{ik}^2
+(\#eq:rhoeps)
+\end{equation}\]</span> and <span class="math display">\[\begin{equation}
+\eta^2_2(\epsilon)=\eta_2^2(0)-4\epsilon\sum_{i=1}^nw_{ik}^{\ }d_{ik}^2(X)u_i+2\epsilon^2\sum_{i=1}^nw_{ik}^{\ }(d_{ik}^2(X)+2u_i^2)-\\
+4\epsilon^{3}\sum_{i=1}^nw_{ik}^{\ }u_i^{\ }+\epsilon^4\sum_{i=1}^nw_{ik}^{\ }
+(\#eq:etaeps)
+\end{equation}\]</span> and finally <span class="math display">\[\begin{equation}
+\sigma_2(\epsilon)=\sigma_2(0)-4\epsilon\sum_{i=1}^nw_{ik}^{\ }(d_{ik}^2(X)-\delta_{ik}^2)u_i+2\epsilon^2\sum_{i=1}^nw_{ik}^{\ }((d_{ik}^2(X)-\delta_{ik}^2)+2u_i^2)-\\
+4\epsilon^{3}\sum_{i=1}^nw_{ik}^{\ }u_i^{\ }+\epsilon^4\sum_{i=1}^nw_{ik}^{\ }
+(\#eq:stresseps)
+\end{equation}\]</span></p>
+<p>Convex, DC, derivative</p>
+<p>Jeffrey</p>
+<p>Code</p>
+<p>Example</p>
+<p>Query: is <span class="math inline">\(\sigma_2\)</span> a convex quartic in <span class="math inline">\(\epsilon\)</span> ? Does <span class="math inline">\(\mathcal{D}\sigma_2(\epsilon )=0\)</span> always have a single root.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sstress_files/figure-html/alscalgruijter-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sstress_files/figure-html/alscalgruijter-2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>1.7957662^{4} after 55 iterations</p>
+<p>Try global minimum over points (p-dimensonal quartic)</p>
+</section>
+<section id="majorization" class="level4" data-number="21.0.4.2">
+<h4 data-number="21.0.4.2" class="anchored" data-anchor-id="majorization"><span class="header-section-number">21.0.4.2</span> Majorization</h4>
+<p><span class="math display">\[
+\sum\sum w_{ij}\{\text{tr} A_{ij}C\}^2\leq\lambda\ \text{tr}\ C^2.
+\]</span> Better maybe (check this)</p>
+<p><span class="math display">\[
+\sum\sum w_{ij}\{\text{tr}\ A_{ij}C\}^2\leq\lambda\sum\sum w_{ij}c_{ij}^2.
+\]</span></p>
+<p><span class="math display">\[
+\sigma(C)=\sigma(\tilde C+(C-\tilde C))=1-2\sum\sum w_{ij}\delta_{ij}\text{tr}\ A_{ij}(\tilde C+(C-\tilde C))+\\\sum\sum w_{ij}\{\text{tr}\ A_{ij}(\tilde C+(C-\tilde C)\}^2=\\
+1-2\sum\sum w_{ij}\delta_{ij}\text{tr}\ A_{ij}\tilde C-2\sum\sum w_{ij}\delta_{ij}\text{tr}\ A_{ij}(C-\tilde C)+\\
++\sum\sum w_{ij}\{\text{tr}\ A_{ij}\tilde C\}^2+
+\sum\sum w_{ij}\{\text{tr}\ A_{ij}(C-\tilde C)\}^2+\\
+2\sum\sum w_{ij}\text{tr}\ A_{ij}\tilde C\ \text{tr}\ A_{ij}(C-\tilde C)=\\
+\sigma(\tilde C)-2\ \text{tr}\ B(\tilde C)(C-\tilde C)+\sum\sum w_{ij}\{\text{tr}\ A_{ij}(C-\tilde C)\}^2+\sum\sum w_{ij}\{\text{tr}\ A_{ij}\tilde C\}^2\leq\\
+\sigma(\tilde C)-2\ \text{tr}\ B(\tilde C)(C-\tilde C)+\lambda\ \text{tr}\ (C-\tilde C)^2+\text{rest}=\\\lambda\ \text{tr}\ (C-\{\tilde C+\lambda^{-1}B(\tilde C)\})^2+\text{rest}
+\]</span></p>
+<p><span class="math display">\[
+B(C):=\nabla\sigma_2(C)=\sum\sum w_{ij}(d_{ij}^2(C)-\delta_{ij}^2)A_{ij}
+\]</span> Necessary condition: <span class="math inline">\(C\)</span> is the projection of <span class="math inline">\(\overline{C}:=C-\lambda^{-1}B(C)\)</span> on the cone of psd matrices. Thus <span class="math display">\[C\gtrsim 0\\
+B(C)\gtrsim 0\\
+\text{tr}\ CB(C)=0
+\]</span></p>
+<p><span class="citation" data-cites="deleeuw_U_75b">De Leeuw (<a href="references.html#ref-deleeuw_U_75b" role="doc-biblioref">1975</a>)</span></p>
+<p><span class="citation" data-cites="deleeuw_groenen_pietersz_E_16m">De Leeuw, Groenen, and Pietersz (<a href="references.html#ref-deleeuw_groenen_pietersz_E_16m" role="doc-biblioref">2016</a>)</span></p>
+<p>takane</p>
+<p>brown</p>
+<p>Augmentation</p>
+<p>Functions of Squared Distances</p>
+<p><span class="math display">\[
+f(X)=F(D^2(X))
+\]</span> <span class="math display">\[
+\mathcal{D}f(X)=2\sum\sum\mathcal{D}_{ij}F(D^2(X))A_{ij}X
+\]</span> <span class="math display">\[
+f(C)=F(D^2(C))
+\]</span> <span class="math display">\[
+\mathcal{D}f(C)=\sum\sum\mathcal{D}_{ij}F(D^2(C))A_{ij}
+\]</span></p>
+<p><span class="math display">\[
+\mathcal{D}^2f(C)=\sum\sum\mathcal{D}_{ij,kl}F(D^2(C))A_{ij}
+\]</span></p>
+</section>
+<section id="sos" class="level4" data-number="21.0.4.3">
+<h4 data-number="21.0.4.3" class="anchored" data-anchor-id="sos"><span class="header-section-number">21.0.4.3</span> SOS</h4>
+<p>Normal Fourth degree tensor</p>
+<p><span class="math display">\[
+\sum\sum w_{ij}(\delta_{ij}-x'A_{ij}x)^2
+\]</span> <span class="math display">\[
+\sum_k\sum_l\left\{\sum\sum w_{ij}\delta_{ij}A_{ij}\right\}x_kx_l
+\]</span></p>
+<p><span class="math display">\[
+\sum_{k}\sum_l\sum_{p}\sum_q\left\{\sum\sum w_{ij}\delta_{ij}\{A_{ij}\otimes A_{ij}\}\right\}_{klpq}x_kx_lx_px_q
+\]</span></p>
+</section>
+<section id="duality" class="level4" data-number="21.0.4.4">
+<h4 data-number="21.0.4.4" class="anchored" data-anchor-id="duality"><span class="header-section-number">21.0.4.4</span> Duality</h4>
+<p>!! David Gao</p>
+</section>
+<section id="alsunfold" class="level4" data-number="21.0.4.5">
+<h4 data-number="21.0.4.5" class="anchored" data-anchor-id="alsunfold"><span class="header-section-number">21.0.4.5</span> ALS Unfolding</h4>
+<p>In the heady days around 1968, when the Department of Data Theory was founded in Leiden, the focus was very much on unfolding. Coombs had just visited and the non-metric revolution was starting up. Alternating least squares was in the air. I was supposed to work on a program for metric unfolding, starting from the ideas of <span class="citation" data-cites="ross_cliff_64">Ross and Cliff (<a href="references.html#ref-ross_cliff_64" role="doc-biblioref">1964</a>)</span> and the machinery provoded by Torgerson’s classical scaling.</p>
+<p>The idea, mainly due to John van de Geer, was to complete the <span class="math inline">\(n\times m\)</span> matrix of off-diagonal dissimilarities to a symmetric matrix of order <span class="math inline">\(n+m\)</span>, starting with initial estimates of the distances in the two diagonal blocks. Then apply Torgerson, and use the results to improve the estimates of the distances in the diagonal blocks, then use Torgerson again, and so on. Alternating least squares with imputation of the diagonal blocks. Multidimensional scaling of <span class="math inline">\(n+m\)</span> objects, with zero weights for the diagonal blocks. But it only worked to a certtain point. After decreasing stress for a while and approaching convergence the loss started to increase. We were deflated and gave up the approach, without really being able to understand about why it did not work (<span class="citation" data-cites="deleeuw_R_68g">De Leeuw (<a href="references.html#ref-deleeuw_R_68g" role="doc-biblioref">1968</a>)</span>).</p>
+<p>In hindsight, it is clear what was wrong. We imputed the diagonal blocks minimizing stress, and then adjusted the configuration using strain. Two different loss functions, which obviously violated the basic idea of alternating least squares and the guaranteed convergence of either of the two loss functions.</p>
+<p>What is worth preserving from this approach is the initial estimate for the diagonal blocks, again due to John van de Geer. It cleverly uses the two triangle inequalities, assuming the dissimilarities are really distances. For <span class="math inline">\(1\leq i&lt;j\leq n\)</span></p>
+<p><span class="math display">\[
+\delta_{ij}=\frac12\left\{\min_{k=1}^m(\delta_{ik}+\delta_{jk}) + \max_{k=1}^m|\delta_{ik}-\delta_{jk}|\right\},
+\]</span> and for <span class="math inline">\(n+1\leq k&lt;l\leq n+m\)</span> <span class="math display">\[
+\delta_{kl}=\frac12\left\{\min_{v=1}^n(\delta_{vk}+\delta_{vl}) + \max_{k=1}^m|\delta_{vk}-\delta_{vl}|\right\}.
+\]</span></p>
+<p><span class="citation" data-cites="greenacre_browne_86">Greenacre and Browne (<a href="references.html#ref-greenacre_browne_86" role="doc-biblioref">1986</a>)</span></p>
+<p>augmentation</p>
+</section>
+</section>
+<section id="bounds-for-sstress" class="level3" data-number="21.0.5">
+<h3 data-number="21.0.5" class="anchored" data-anchor-id="bounds-for-sstress"><span class="header-section-number">21.0.5</span> Bounds for sstress</h3>
+<p><span class="citation" data-cites="deleeuw_bettonvil_A_86">De Leeuw and Bettonvil (<a href="references.html#ref-deleeuw_bettonvil_A_86" role="doc-biblioref">1986</a>)</span></p>
+</section>
+<section id="strain" class="level2" data-number="21.1">
+<h2 data-number="21.1" class="anchored" data-anchor-id="strain"><span class="header-section-number">21.1</span> strain</h2>
+<p>Classical scaling as formulated by <span class="citation" data-cites="torgerson_58">Torgerson (<a href="references.html#ref-torgerson_58" role="doc-biblioref">1958</a>)</span> computes the dominant non-negative eigenvalues, with corresponding eigenvectors, of the Torgerson transform of the squared dissimilarities. This is usually presented as an “ignore-errors” technique. It is clear what it does in the case of perfect fit of distances to dissimilarities, it is not so obvious how it measures approximation errors in the case of imperfect fit. Or, to put it differently, MDS lore has it that in classical scaling loss is defined on the scalar products, which are a transformation of the dissimilarity data, and not on the dissimilarities themselves. This is presented as somehow being a disadvantage (see, for example, <span class="citation" data-cites="takane_young_deleeuw_A_77">Takane, Young, and De Leeuw (<a href="references.html#ref-takane_young_deleeuw_A_77" role="doc-biblioref">1977</a>)</span>, <span class="citation" data-cites="browne_87">Browne (<a href="references.html#ref-browne_87" role="doc-biblioref">1987</a>)</span>).</p>
+<p>If we agree to use weights, then <em>strain</em> is defined straightforwardly as</p>
+<p><span class="math display">\[\begin{equation}
+\sigma_\tau(X):=\sum_{i=1}^n\sum_{j=1}^nw_{ij}(\tau_{ij}(\Delta^{(2)})-x_i'x_j^{\ })^2.
+(\#eq:straindef)
+\end{equation}\]</span></p>
+<p>Note that this summation includes the diagonal elements, so in general we cannot expect <span class="math inline">\(W\)</span> to be hollow. In fact, @(eq:straindef) adds diagonal elements only once, while the off-diagonal elements are added twice. This observation is the basis of the excellent paper by <span class="citation" data-cites="bailey_gower_90">Bailey and Gower (<a href="references.html#ref-bailey_gower_90" role="doc-biblioref">1990</a>)</span>.</p>
+<p>Because of the weights, minimizing strain in this form does not lead to an eigenvalue problem, unless there is a non-negative vector <span class="math inline">\(u\)</span> such that <span class="math inline">\(w_{ij}=u_iu_j\)</span>. In that case <span class="math display">\[\begin{equation}
+\sigma_\tau(X):=\text{tr}\ (U\tau(\Delta^{(2)})U-UXX'U)^2,
+(\#eq:strainuu)
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(U=\text{diag}(u)\)</span>, and we can find <span class="math inline">\(UX\)</span>, and thus <span class="math inline">\(X\)</span>, by eigen decomposition of <span class="math inline">\(U\tau_{ij}(\Delta^{(2)})U\)</span>.</p>
+<p>We can use our general results on unweighting, as in section @ref(minunweight), to get rid of the weights, but this leads to a sequence of eigenvalue problems. Nevertheless, if the weights are important, this is an option.</p>
+<section id="unweighted" class="level3" data-number="21.1.1">
+<h3 data-number="21.1.1" class="anchored" data-anchor-id="unweighted"><span class="header-section-number">21.1.1</span> Unweighted</h3>
+<p>For column-centered configurations <span class="math display">\[
+J(\Delta^{(2)}-D^{(2)}(X))J=-2(\tau(\Delta^{(2)})-XX')
+\]</span> Thus if all weights are equal to one then <span class="math display">\[
+4\sigma_\tau(X)=\text{tr}\ J(\Delta^{(2)}-D^{(2)}(X))J(\Delta^{(2)}-D^{(2)}(X)),
+\]</span> which shows that strain is a matrix-weighted version of sstress. It also shows (<span class="citation" data-cites="deleeuw_heiser_C_82">De Leeuw and Heiser (<a href="references.html#ref-deleeuw_heiser_C_82" role="doc-biblioref">1982</a>)</span>, theorem 21) that <span class="math inline">\(\sigma_\tau(X)\leq\frac14\sigma_2(X).\)</span></p>
+</section>
+<section id="bailey-gower" class="level3" data-number="21.1.2">
+<h3 data-number="21.1.2" class="anchored" data-anchor-id="bailey-gower"><span class="header-section-number">21.1.2</span> Bailey-Gower</h3>
+<p><span class="math display">\[
+\min_{C\gtrsim 0}\sigma(C):=\sum_{i=1}^n\sum_{j=1}^nw_{ij}(s_{ij}-c_{ij})^2
+\]</span> If <span class="math inline">\(E\)</span> is psd then <span class="math display">\[
+\sum_{i=1}^n\sum_{j=1}^nw_{ij}((s_{ij}-c_{ij})-\alpha e_{ij})^2=\\\sigma(C)-2\alpha\sum_{i=1}^n\sum_{j=1}^nw_{ij}(s_{ij}-c_{ij})e_{ij}+\alpha^2\sum_{i=1}^n\sum_{j=1}^nw_{ij}e_{ij}^2\geq\sigma(C)
+\]</span> <span class="math display">\[\begin{align}
+&amp;\sum_{i=1}^n\sum_{j=1}^nw_{ij}(c_{ij}-s_{ij})e_{ij}\geq 0,\\
+&amp;\sum_{i=1}^n\sum_{j=1}^nw_{ij}(c_{ij}-s_{ij})c_{ij}=0.
+\end{align}\]</span> ### Using Additivity</p>
+<p><span class="math display">\[
+\sigma_\tau(X)=\min_{\alpha}\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}^2-(\alpha_i+\alpha_j)-2x_i'x_j^{\ }))^2
+\]</span></p>
+<p><span class="math display">\[
+\sigma_2(X)=\min_{\alpha\geq 0}\min_{\text{diag}XX'=I}\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(\delta_{ij}^2-(\alpha_i^2+\alpha_j^2-2\alpha_i\alpha_j\ x_i'x_j^{\ }))^2
+\]</span></p>
+<p>projection</p>
+<p>If there are no weights, or if we unweight the weighted loss function</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-bailey_gower_90" class="csl-entry" role="listitem">
+Bailey, R. A., and J. C. Gower. 1990. <span>“<span class="nocase">Approximating a Symmetric Matrix</span>.”</span> <em>Psychometrika</em> 55 (4): 665–75.
+</div>
+<div id="ref-browne_87" class="csl-entry" role="listitem">
+Browne, M. W. 1987. <span>“<span class="nocase">The Young-Householder Algorithm and the Least Squares Multidimensional Scaling of Squared Distances</span>.”</span> <em>Journal of Classification</em> 4: 175–90.
+</div>
+<div id="ref-deleeuw_R_68g" class="csl-entry" role="listitem">
+De Leeuw, J. 1968. <span>“Nonmetric Multidimensional Scaling.”</span> Research Note 010-68. Department of Data Theory FSW/RUL. <a href="https://jansweb.netlify.app/publication/deleeuw-r-68-9/deleeuw-r-68-g.pdf">https://jansweb.netlify.app/publication/deleeuw-r-68-9/deleeuw-r-68-g.pdf</a>.
+</div>
+<div id="ref-deleeuw_U_75b" class="csl-entry" role="listitem">
+———. 1975. <span>“<span class="nocase">An Alternating Least Squares Approach to Squared Distance Scaling</span>.”</span> Department of Data Theory FSW/RUL.
+</div>
+<div id="ref-deleeuw_bettonvil_A_86" class="csl-entry" role="listitem">
+De Leeuw, J., and B. Bettonvil. 1986. <span>“An Upper Bound for <span>SSTRESS</span>.”</span> <em>Psychometrika</em> 51: 149–53.
+</div>
+<div id="ref-deleeuw_groenen_pietersz_E_16m" class="csl-entry" role="listitem">
+De Leeuw, J., P. Groenen, and R. Pietersz. 2016. <span>“An Alternating Least Squares Approach to Squared Distance Scaling.”</span> 2016. <a href="https://jansweb.netlify.app/publication/deleeuw-groenen-pietersz-e-16-m/deleeuw-groenen-pietersz-e-16-m.pdf">https://jansweb.netlify.app/publication/deleeuw-groenen-pietersz-e-16-m/deleeuw-groenen-pietersz-e-16-m.pdf</a>.
+</div>
+<div id="ref-deleeuw_heiser_C_82" class="csl-entry" role="listitem">
+De Leeuw, J., and W. J. Heiser. 1982. <span>“Theory of Multidimensional Scaling.”</span> In <em>Handbook of Statistics, Volume <span>II</span></em>, edited by P. R. Krishnaiah and L. Kanal. Amsterdam, The Netherlands: North Holland Publishing Company.
+</div>
+<div id="ref-greenacre_browne_86" class="csl-entry" role="listitem">
+Greenacre, M. J., and M. W. Browne. 1986. <span>“<span class="nocase">An Efficient Alternating Least Squares Algorithm to Perform Multidimensional Unfolding</span>.”</span> <em>Psychometrika</em> 51 (2): 241–50.
+</div>
+<div id="ref-ross_cliff_64" class="csl-entry" role="listitem">
+Ross, J., and N. Cliff. 1964. <span>“<span class="nocase">A Generalization of the Interpoint Distance Model</span>.”</span> <em>Psychometrika</em> 29 (167-176).
+</div>
+<div id="ref-takane_young_deleeuw_A_77" class="csl-entry" role="listitem">
+Takane, Y., F. W. Young, and J. De Leeuw. 1977. <span>“Nonmetric Individual Differences in Multidimensional Scaling: An Alternating Least Squares Method with Optimal Scaling Features.”</span> <em>Psychometrika</em> 42: 7–67.
+</div>
+<div id="ref-torgerson_58" class="csl-entry" role="listitem">
+Torgerson, W. S. 1958. <em><span class="nocase">Theory and Methods of Scaling</span></em>. New York: Wiley.
+</div>
+<div id="ref-young_takane_lewyckyj_78a" class="csl-entry" role="listitem">
+Young, F. W., Y. Takane, and R. Lewyckyj. 1978a. <span>“<span class="nocase">ALSCAL: A Nonmetric Multidimensional Scaling Program with Several Individual-Differences Options</span>.”</span> <em>Behavior Research Methods &amp; Instrumentation</em> 10 (3): 451–53.
+</div>
+<div id="ref-young_takane_lewyckyj_78b" class="csl-entry" role="listitem">
+———. 1978b. <span>“<span class="nocase">Three Notes on ALSCAL</span>.”</span> <em>Psychometrika</em> 43 (3): 433–35.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./nonpairs.html" class="pagination-link" aria-label="Compound Objects">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Compound Objects</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./rstress.html" class="pagination-link" aria-label="fstress and rstress">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">fstress and rstress</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

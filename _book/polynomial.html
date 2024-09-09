@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Polynomial MDS – Least Squares Euclidean Multidimensional Scaling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ordinal.html" rel="next">
+<link href="./interval.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+</head><body class="nav-sidebar floating">.greybox {
+  padding: 1em;
+  background: white;
+  color: black;
+  border: 2px solid orange;
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./polynomial.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Polynomial MDS</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Least Squares Euclidean Multidimensional Scaling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Note</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation and Reserved Symbols</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./properties.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Properties of Stress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spaces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stress Spaces</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classical Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./minimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Minimization of Basic Stress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acceleration of Convergence</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonmetric.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Nonmetric MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interval MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./polynomial.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Polynomial MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ordinal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Ordinal MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./splinical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Splinical MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unidimensional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./full.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Full-dimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unfolding.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unfolding</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./constrained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Constrained Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./individual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Individual Differences</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./asymmetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Asymmetry in MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nominal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Nominal MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonordinal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Nonmonotonic MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonpairs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Compound Objects</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sstress.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">sstress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rstress.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">fstress and rstress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./altls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Alternative Least Squares Loss</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inverse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Inverse Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Stability of MDS Solutions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./global.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">In Search of Global Minima</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./backmatter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">(APPENDIX) Appendices</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">9.1</span> Introduction</a></li>
+  <li><a href="#fitting-polynomials" id="toc-fitting-polynomials" class="nav-link" data-scroll-target="#fitting-polynomials"><span class="header-section-number">9.2</span> Fitting Polynomials</a></li>
+  <li><a href="#positive-and-convex-monotone-polynomials" id="toc-positive-and-convex-monotone-polynomials" class="nav-link" data-scroll-target="#positive-and-convex-monotone-polynomials"><span class="header-section-number">9.3</span> Positive and Convex, Monotone Polynomials</a>
+  <ul class="collapse">
+  <li><a href="#introduction-1" id="toc-introduction-1" class="nav-link" data-scroll-target="#introduction-1"><span class="header-section-number">9.3.1</span> Introduction</a></li>
+  <li><a href="#a-qp-algorithm" id="toc-a-qp-algorithm" class="nav-link" data-scroll-target="#a-qp-algorithm"><span class="header-section-number">9.3.2</span> A QP Algorithm</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">9.3.3</span> Examples</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Polynomial MDS</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">9.1</span> Introduction</h2>
+</section>
+<section id="fitting-polynomials" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="fitting-polynomials"><span class="header-section-number">9.2</span> Fitting Polynomials</h2>
+<p><span class="math display">\[
+\sigma(X)=\mathop{\sum\sum}_{1\leq i&lt;j\leq n}w_{ij}(P_r(\delta_{ij})-d_{ij}(X))^2
+\]</span></p>
+<p><span class="math display">\[
+P_r(\delta_{ij}):=\sum_{s=0}^r\alpha_s^{\ }\delta_{ij}^s.
+\]</span></p>
+<p>The polynomial <span class="math inline">\(P_r\)</span> is <em>tied down</em> if <span class="math inline">\(\alpha_0=0\)</span>, and thus <span class="math inline">\(P_r(0)=0\)</span>.</p>
+<p>Vandermonde matrix</p>
+</section>
+<section id="positive-and-convex-monotone-polynomials" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="positive-and-convex-monotone-polynomials"><span class="header-section-number">9.3</span> Positive and Convex, Monotone Polynomials</h2>
+<section id="introduction-1" class="level3" data-number="9.3.1">
+<h3 data-number="9.3.1" class="anchored" data-anchor-id="introduction-1"><span class="header-section-number">9.3.1</span> Introduction</h3>
+<p>Constraints on values, constraints on coefficients</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">return</span>(x <span class="sc">*</span> (x <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> (x <span class="sc">-</span> <span class="dv">2</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">f</span>(x)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">type=</span><span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"RED"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(.<span class="dv">10</span>, .<span class="dv">45</span>, <span class="fl">2.25</span>, <span class="fl">2.75</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">f</span>(x)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> y[<span class="dv">1</span>])</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> y[<span class="dv">2</span>])</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> y[<span class="dv">3</span>])</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> y[<span class="dv">4</span>])</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> x[<span class="dv">1</span>])</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> x[<span class="dv">2</span>])</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> x[<span class="dv">3</span>])</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> x[<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="polynomial_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Tied-down increasing non-negative cubic.</p>
+<p>Write the tied-down cubic in the form <span class="math inline">\(f(x)=ax(x^2+2bx+c)\)</span>. Since we must have <span class="math inline">\(f(x)\rightarrow+\infty\)</span> of <span class="math inline">\(x\rightarrow+\infty\)</span> we have <span class="math inline">\(a&gt;0\)</span>. Since <span class="math inline">\(f\)</span> must be increasing at zero, we must have <span class="math inline">\(f'(0)=c&gt;0\)</span>. No real roots on the positive reals. Case 1: no real roots at all <span class="math inline">\(b^2-c&lt;0\)</span>. Case 2: two real roots, both negative <span class="math inline">\(b^2-c\geq 0\)</span> and <span class="math inline">\(b\geq 0\)</span>. Since <span class="math inline">\(c&gt;0\)</span> the product of roots is positive. If the sum is negative, i.e.&nbsp;if <span class="math inline">\(b&gt;0\)</span> both roots are negative. Since <span class="math inline">\(f''(x)=6x+b\)</span> we see that <span class="math inline">\(f\)</span> is convex on the positive real axis if <span class="math inline">\(b\geq 0\)</span>.</p>
+</section>
+<section id="a-qp-algorithm" class="level3" data-number="9.3.2">
+<h3 data-number="9.3.2" class="anchored" data-anchor-id="a-qp-algorithm"><span class="header-section-number">9.3.2</span> A QP Algorithm</h3>
+<p>In this section we construct an algorithm for a general weighted linear least squares projection problem with equality and/or inequality constraints. It uses duality and unweighting majorization. The section takes the form of a small diversion, with examples. This may seem somewhat excessive, but it provides an easy reference for both you and me and it serves as a manual for the corresponding R code.</p>
+<p>We start with the <em>primal problem</em>, say problem <span class="math inline">\(\mathcal{P}\)</span>, which is minimizing</p>
+<p><span class="math display">\[\begin{equation}
+f(x)=\frac12(Hx-z)'V(Hx-z)
+(\#eq:qpbase)
+\end{equation}\]</span></p>
+<p>over all <span class="math inline">\(x\)</span> satisfying equalities <span class="math inline">\(Ax\geq b\)</span> and equations <span class="math inline">\(Cx=d\)</span>. We suppose the <em>Slater condition</em> is satisfied, i.e.&nbsp;there is an <span class="math inline">\(x\)</span> such that <span class="math inline">\(Ax&gt;b\)</span>. And, in addition, we suppose the system of inequalities and equations is <em>consistent</em>, i.e.&nbsp;has at least one solution.</p>
+<p>We first reduce the primal problem to a simpler, and usually smaller, one by partitioning the loss function. Define</p>
+<p><span class="math display">\[\begin{align}
+\begin{split}
+W&amp;:=H'VH,\\
+y&amp;:=W^{-1}H'Vz,\\
+Q&amp;:=(I-H(H'VH)^{-1}H'V).\\
+\end{split}
+(\#eq:qpfirstpart)
+\end{align}\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[\begin{equation}
+(Hx-y)'V(Hx-y)=(x-y)'W(x-y)+y'Q'VQy,
+(\#eq:qpsimple)
+\end{equation}\]</span></p>
+<p>The simplified primal problem <span class="math inline">\(\mathcal{P}'\)</span> is to minimize <span class="math inline">\((x-y)'W(x-y)\)</span> over <span class="math inline">\(Ax\geq b\)</span> and <span class="math inline">\(Cx=d\)</span>, where <span class="math inline">\(W\)</span> is assumed to be positive definite. Obviously the solutions to <span class="math inline">\(\mathcal{P}\)</span> and <span class="math inline">\(\mathcal{P}'\)</span> are the same. The two loss function values only differ by the constant term <span class="math inline">\(y'Q'VQy\)</span>.</p>
+<p>We do not solve <span class="math inline">\(\mathcal{P}'\)</span> drectly, but we use Lagrangian duality and solve the dual quadratic programmng problem. The Lagrangian for <span class="math inline">\(\mathcal{P}'\)</span> is</p>
+<p><span class="math display">\[\begin{equation}
+\mathcal{L}(x,\lambda,\mu)=\frac12(x-y)'W(x-y)-
+\lambda'(Ax - b)-\mu'(Cx-d),
+(\#eq:qplagrange)
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\lambda\geq 0\)</span> and <span class="math inline">\(\mu\)</span> are the Lagrange multipliers.</p>
+<p>Now</p>
+<p><span class="math display">\[\begin{align}
+\begin{split}
+\max_{\lambda\geq 0}\max_\mu\mathcal{L}(x,\lambda,\mu)&amp;=\\
+&amp;=\begin{cases}\frac12(x-y)'W(x-y)-\lambda'(Ax - b)-\mu'(Cx-d)&amp;\text{ if }Ax\geq b,\\
++\infty&amp;\text{ otherwise},
+\end{cases}
+\end{split}
+(\#eq:qpxcalc1)
+\end{align}\]</span></p>
+<p>and thus</p>
+<p><span class="math display">\[\begin{equation}
+\min_x\max_{\lambda\geq 0}\max_\mu\mathcal{L}(x,\lambda,\mu)=\min_{Ax\geq b}\min_{Cx=d}\frac12(x-y)'W(x-y),
+(\#eq:qpxcalc2)
+\end{equation}\]</span></p>
+<p>which is our original simplified primal problem <span class="math inline">\(\mathcal{P}'\)</span>.</p>
+<p>We now look at the <em>dual problem</em> <span class="math inline">\(\mathcal{D}'\)</span> (of <span class="math inline">\(\mathcal{P}'\)</span>), which means solving</p>
+<p><span class="math display">\[\begin{equation}
+\max_{\lambda\geq 0}\max_\mu\min_x\mathcal{L}(x,\lambda,\mu).
+(\#eq:qpdual)
+\end{equation}\]</span></p>
+<p>The inner minimum over <span class="math inline">\(x\)</span> for given <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\mu\)</span> is attained at</p>
+<p><span class="math display">\[\begin{equation}
+x=y+W^{-1}(A'\mid C')\begin{bmatrix}\lambda\\\mu\end{bmatrix},
+(\#eq:qpxsolve)
+\end{equation}\]</span></p>
+<p>and is equal to <span class="math inline">\(-g(\lambda,\mu)\)</span>, where</p>
+<p><span class="math display">\[\begin{equation}
+\frac12\begin{bmatrix}\lambda&amp;\mu\end{bmatrix}
+\begin{bmatrix}AW^{-1}A'&amp;AW^{-1}C'\\CW^{-1}A'&amp;CW^{-1}C'\end{bmatrix}\begin{bmatrix}\lambda\\\mu\end{bmatrix}+\\
++\lambda'(Ay-b)\\
++\mu'(Cy-d)
+(\#eq:qpdualf)
+\end{equation}\]</span></p>
+<p>Our strategy is to solve <span class="math inline">\(\mathcal{D'}\)</span> for <span class="math inline">\(\lambda\geq 0\)</span> and/or <span class="math inline">\(\mu\)</span>. Because of our biases we do not maximize <span class="math inline">\(-g\)</span>, we minimize <span class="math inline">\(g\)</span>. Then compute the solution of both <span class="math inline">\(\mathcal{P}'\)</span> and <span class="math inline">\(\mathcal{P}\)</span> from @ref(eq:qpxsolve). The duality theorem for quadratic programming tells us the values of <span class="math inline">\(f\)</span> at the optimum of <span class="math inline">\(\mathcal{P}'\)</span> and <span class="math inline">\(-g\)</span> at the optimum of <span class="math inline">\(\mathcal{D}'\)</span> are equal, and of course the value at the optimum of <span class="math inline">\(\mathcal{P}\)</span> is that of <span class="math inline">\(\mathcal{P}'\)</span> plus the constant <span class="math inline">\(y'QVQy\)</span>.</p>
+<p>From here on we can proceed with unweighting in various ways. We could, for instance, minimize out <span class="math inline">\(\mu\)</span> and then unweight the resulting quadratic form. Instead, we go the easy way. Majorize the partitioned matrix <span class="math inline">\(K\)</span> in the quadratic part of @ref(eq:qpdualf) by a similarly partitioned diagonal positive matrix <span class="math inline">\(E\)</span>.</p>
+<p><span class="math display">\[\begin{equation}
+E:=\begin{bmatrix}F&amp;\emptyset\\\emptyset&amp;G\end{bmatrix}\gtrsim K:=\begin{bmatrix}AW^{-1}A'&amp;AW^{-1}C'\\CW^{-1}A'&amp;CW^{-1}C'\end{bmatrix}
+(\#eq:qpdumaj)
+\end{equation}\]</span></p>
+<p>Suppose <span class="math inline">\(\tilde\lambda\geq 0\)</span> and <span class="math inline">\(\tilde\mu\)</span> are the current best solutions of the dual problem. Put them on top of each other to define <span class="math inline">\(\tilde\gamma\)</span>, and do the same with <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\mu\)</span> to get <span class="math inline">\(\gamma\)</span>. Then <span class="math inline">\(g(\lambda,\mu)\)</span> becomes</p>
+<p><span class="math display">\[\begin{equation}
+\frac12 (\tilde\gamma+(\gamma-\tilde\gamma))'E(\tilde\gamma+(\gamma-\tilde\gamma))+\gamma'(Ry-e)=\\
+=\frac12(\gamma-\tilde\gamma)'E(\gamma-\tilde\gamma)+ (\gamma-\tilde\gamma)'E(\tilde\gamma+(Ry-e))+\\+\frac12\tilde\gamma'E\tilde\gamma+\tilde\gamma'(Ry-e)
+(\#eq:qpdualcomp)
+\end{equation}\]</span></p>
+<p>The last two terms do not depend on <span class="math inline">\(\gamma\)</span>, so for the majorization algorithm is suffices to minimize</p>
+<p><span class="math display">\[\begin{equation}
+\frac12(\gamma-\tilde\gamma)'F(\gamma-\tilde\gamma)+ (\gamma-\tilde\gamma)'E(\tilde\gamma+(Ry-e))
+(\#eq:qpdualproj)
+\end{equation}\]</span></p>
+<p>Let</p>
+<p><span class="math display">\[\begin{equation}
+\xi:=\tilde\gamma-F^{-1}E(\tilde\gamma+(Ry-e))
+(\#eq:qpdefxi)
+\end{equation}\]</span></p>
+<p>then @ref(eq:qpdualproj) becomes</p>
+<p><span class="math display">\[\begin{equation}
+\frac12(\gamma-\xi)'F(\gamma-\xi)-\frac12\xi'F\xi
+(\#eq:qpdualsimp)
+\end{equation}\]</span></p>
+<p>Because <span class="math inline">\(F\)</span> is diagonal <span class="math inline">\(\lambda_i=\max(0,\xi_i)\)</span> for <span class="math inline">\(i=1,\cdots m_1\)</span> and and <span class="math inline">\(\mu_i=\xi_{i+m_1}\)</span> for <span class="math inline">\(i=1,\cdots m_2\)</span>.</p>
+<p>Section @ref(apcodemathadd) has the R code for qpmaj(). The defaults are set to do a simple isotone regression, but of course the function has a much larger scope. It can handle equality constraints, linear convexity constraints, partial orders, and much more general linear inequalities. It can fit polynomials, monotone polynomials, splnes, and monotone splines of various sorts. It is possible to have only inequality constraints, only equality constraints, or both. The matrix <span class="math inline">\(H\)</span> of predictors in @ref(eq:qpbase) can either be there or not be there.</p>
+<p>The function qpmaj() returns both <span class="math inline">\(x\)</span> and <span class="math inline">\(\lambda\)</span>, and the values of <span class="math inline">\(\mathcal{P}\)</span>, <span class="math inline">\(\mathcal{P}'\)</span>, and <span class="math inline">\(\mathcal{D}'\)</span>. And also the <em>predicted values</em> <span class="math inline">\(Hx\)</span>, and the <em>constraint values</em> <span class="math inline">\(Ax-b\)</span> and <span class="math inline">\(Cx-d\)</span>, if applicable. It’s always nice to check <em>complimentary slackness</em> <span class="math inline">\(\lambda'(Ax-b)=0\)</span>, and another check is provided because the values of <span class="math inline">\(\mathcal{P}'\)</span> and <span class="math inline">\(\mathcal{D}'\)</span> must be equal. Finally qpmaj() returns the number of iterations for the dual problem.</p>
+<p>The function qpmaqj() does not have the pretense to compete in efficiency with the sophisticated pivoting and active set strategies for quadratic programming discussed for example by <span class="citation" data-cites="best_17">Best (<a href="references.html#ref-best_17" role="doc-biblioref">2017</a>)</span>. But it seems to do a reliable job on our small examples, and it is an interesting example of majorization and unweighting.</p>
+<section id="example-1-simple-monotone-regression" class="level4" data-number="9.3.2.1">
+<h4 data-number="9.3.2.1" class="anchored" data-anchor-id="example-1-simple-monotone-regression"><span class="header-section-number">9.3.2.1</span> Example 1: Simple Monotone Regression</h4>
+<p>Here are the two simple monotone regression examples from section @ref(mathsimpiso), the first one without weights and the second one with a diagonal matrix of weights.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>y<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">3</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qpmaj</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$x
+[1] 1.0 1.4 1.4 1.4 1.4 1.4 3.0
+
+$fprimal
+[1] 4.6
+
+$fdual
+[1] 4.6
+
+$lambda
+[1] 0.0000000 0.5999999 0.1999999 1.7999999 2.3999999 0.0000000
+
+$inequalities
+[1]  4.000001e-01 -2.760349e-08 -4.466339e-08 -4.466339e-08 -2.760349e-08
+[6]  1.600000e+00
+
+$itel
+[1] 146</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qpmaj</span>(y, <span class="at">v =</span> <span class="fu">diag</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$x
+[1] 1.000000 1.400000 1.400000 1.777778 1.777778 1.777778 3.000000
+
+$fprimal
+[1] 11.37778
+
+$fdual
+[1] 11.37778
+
+$lambda
+[1] 0.000000 1.200000 0.000000 4.888889 5.555555 0.000000
+
+$inequalities
+[1]  4.000000e-01  0.000000e+00  3.777778e-01 -4.294379e-08 -2.976007e-08
+[6]  1.222222e+00
+
+$itel
+[1] 81</code></pre>
+</div>
+</div>
+</section>
+<section id="example-2-monotone-regression-with-ties" class="level4" data-number="9.3.2.2">
+<h4 data-number="9.3.2.2" class="anchored" data-anchor-id="example-2-monotone-regression-with-ties"><span class="header-section-number">9.3.2.2</span> Example 2: Monotone Regression with Ties</h4>
+<p>Now suppose the data have tie-blocks, which we indicate with <span class="math inline">\(\{1\}\leq\{2,3,4\}\leq\{5,6\}\leq\{7\}\)</span>. The Hasse diagram of the partial order (courtesy of <span class="citation" data-cites="ciomek_17">Ciomek (<a href="references.html#ref-ciomek_17" role="doc-biblioref">2017</a>)</span>) is</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="polynomial_files/figure-html/hasse-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the primary approach to ties the inequality constraints <span class="math inline">\(Ax\geq 0\)</span> are coded with <span class="math inline">\(A\)</span> equal to</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+ [1,]   -1   +1   +0   +0   +0   +0   +0
+ [2,]   -1   +0   +1   +0   +0   +0   +0
+ [3,]   -1   +0   +0   +1   +0   +0   +0
+ [4,]   +0   -1   +0   +0   +1   +0   +0
+ [5,]   +0   -1   +0   +0   +0   +1   +0
+ [6,]   +0   +0   -1   +0   +1   +0   +0
+ [7,]   +0   +0   -1   +0   +0   +1   +0
+ [8,]   +0   +0   +0   -1   +1   +0   +0
+ [9,]   +0   +0   +0   -1   +0   +1   +0
+[10,]   +0   +0   +0   +0   -1   +0   +1
+[11,]   +0   +0   +0   +0   +0   -1   +1</code></pre>
+</div>
+</div>
+<p>Applying our algorithm gives</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qpmaj</span>(y, <span class="at">a =</span> a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$x
+[1] 1.000000 1.333333 1.000000 1.333333 2.000000 1.333333 3.000000
+
+$fprimal
+[1] 4.333333
+
+$fdual
+[1] 4.333333
+
+$lambda
+ [1] 0.000000e+00 2.069906e-15 0.000000e+00 0.000000e+00 6.666667e-01
+ [6] 0.000000e+00 0.000000e+00 0.000000e+00 1.666667e+00 0.000000e+00
+[11] 0.000000e+00
+
+$inequalities
+ [1]  3.333333e-01  4.107825e-15  3.333334e-01  6.666667e-01  8.182895e-08
+ [6]  1.000000e+00  3.333333e-01  6.666666e-01 -8.182895e-08  1.000000e+00
+[11]  1.666667e+00
+
+$itel
+[1] 96</code></pre>
+</div>
+</div>
+<p>In the secondary approach we require <span class="math inline">\(Cx=0\)</span>, with <span class="math inline">\(C\)</span> equal to</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]   +0   +1   -1   +0   +0   +0   +0
+[2,]   +0   +1   +0   -1   +0   +0   +0
+[3,]   +0   +0   +0   +0   +1   -1   +0</code></pre>
+</div>
+</div>
+<p>In addition we construct <span class="math inline">\(A\)</span> to require <span class="math inline">\(x_1\leq x_2\leq x_5\leq x_7\)</span>. This gives</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qpmaj</span>(y, <span class="at">a =</span> a, <span class="at">c =</span> c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$x
+[1] 1.0 1.4 1.4 1.4 1.4 1.4 3.0
+
+$fprimal
+[1] 4.6
+
+$fdual
+[1] 4.6
+
+$lambda
+[1] 0.0 1.8 0.0
+
+$inequalities
+[1]  4.000000e-01 -5.100425e-08  1.600000e+00
+
+$mu
+[1] -0.4  1.6 -2.4
+
+$equations
+[1] -2.055633e-08 -2.055633e-08  3.443454e-08
+
+$itel
+[1] 163</code></pre>
+</div>
+</div>
+<p>In the tertiary approach, without weights, we require <span class="math inline">\(x_1\leq\frac{x_2+x_3+x_4}{3}\leq\frac{x_5+x_6}{2}\leq x_7\)</span> which means</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>              <span class="dv">0</span>,<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>,<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>,<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">3</span>,<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>,<span class="dv">0</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>              <span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>,<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>              <span class="dv">3</span>,<span class="dv">7</span>,<span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">matrixPrint</span>(a, <span class="at">d =</span> <span class="dv">2</span>, <span class="at">w =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]  [,2]  [,3]  [,4]  [,5]  [,6]  [,7] 
+[1,] -1.00 +0.33 +0.33 +0.33 +0.00 +0.00 +0.00
+[2,] +0.00 -0.33 -0.33 -0.33 +0.50 +0.50 +0.00
+[3,] +0.00 +0.00 +0.00 +0.00 -0.50 -0.50 +1.00</code></pre>
+</div>
+</div>
+<p>This gives</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qpmaj</span>(y, <span class="at">a =</span> a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$x
+[1]  1.0  1.4  0.4  2.4  2.9 -0.1  3.0
+
+$fprimal
+[1] 1.35
+
+$fdual
+[1] 1.35
+
+$lambda
+[1] 0.0 1.8 0.0
+
+$inequalities
+[1]  4.000000e-01 -1.716935e-08  1.600000e+00
+
+$itel
+[1] 30</code></pre>
+</div>
+</div>
+</section>
+<section id="example-3-weighted-rounding" class="level4" data-number="9.3.2.3">
+<h4 data-number="9.3.2.3" class="anchored" data-anchor-id="example-3-weighted-rounding"><span class="header-section-number">9.3.2.3</span> Example 3: Weighted Rounding</h4>
+<p>This is a silly example in which a vector <span class="math inline">\(y=\)</span> 0.5855288, 0.709466, -0.1093033, -0.4534972, 0.6058875, -1.817956, 0.6300986, -0.2761841, -0.2841597, -0.919322 is “rounded” so that its elements are between <span class="math inline">\(-1\)</span> and <span class="math inline">\(+1\)</span>. The weights <span class="math inline">\(V=W\)</span> are a banded positive definite matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>a<span class="ot">&lt;-</span><span class="fu">rbind</span>(<span class="sc">-</span><span class="fu">diag</span>(<span class="dv">10</span>),<span class="fu">diag</span>(<span class="dv">10</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>b<span class="ot">&lt;-</span><span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">20</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>w<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">outer</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="cf">function</span>(x,y) <span class="fu">abs</span>(x<span class="sc">-</span>y) <span class="sc">&lt;</span> <span class="dv">4</span>), <span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>)<span class="sc">+</span><span class="dv">7</span><span class="sc">*</span><span class="fu">diag</span>(<span class="dv">10</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qpmaj</span>(y, <span class="at">v =</span> w, <span class="at">a =</span> a, <span class="at">b =</span> b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$x
+ [1]  0.737345533  0.917584527  0.215666042 -0.075684750  1.000000017
+ [6] -1.000000039  1.000000023  0.061944776 -0.002332657 -0.754345762
+
+$fprimal
+[1] 1.110748
+
+$fdual
+[1] 1.110749
+
+$lambda
+ [1] 0.0000000 0.0000000 0.0000000 0.0000000 0.0722112 0.0000000 0.1554043
+ [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+[15] 0.0000000 2.8209838 0.0000000 0.0000000 0.0000000 0.0000000
+
+$inequalities
+ [1]  2.626545e-01  8.241547e-02  7.843340e-01  1.075685e+00 -1.735205e-08
+ [6]  2.000000e+00 -2.303727e-08  9.380552e-01  1.002333e+00  1.754346e+00
+[11]  1.737346e+00  1.917585e+00  1.215666e+00  9.243153e-01  2.000000e+00
+[16] -3.922610e-08  2.000000e+00  1.061945e+00  9.976673e-01  2.456542e-01
+
+$itel
+[1] 224</code></pre>
+</div>
+</div>
+</section>
+<section id="example-4-monotone-polynomials" class="level4" data-number="9.3.2.4">
+<h4 data-number="9.3.2.4" class="anchored" data-anchor-id="example-4-monotone-polynomials"><span class="header-section-number">9.3.2.4</span> Example 4: Monotone Polynomials</h4>
+<p>This example has a matrix <span class="math inline">\(H\)</span> with the monomials of degree <span class="math inline">\(1,2,3\)</span> on the 20 points <span class="math inline">\(1,\cdots 20\)</span>. We want to fit a third-degree polynomial which is monotone, non-negative, and anchored at zero (which is why we do not have a monomial of degree zero, i.e.&nbsp;an intercept). Monotonicity is imposed by <span class="math inline">\((h_{i+1}-h_{i})'x\geq 0\)</span> and non-negativity by <span class="math inline">\(h_1'x\geq 0\)</span>. Thus there are <span class="math inline">\(19+1\)</span> inequality restrictions. For <span class="math inline">\(y\)</span> we choose points on the quadratic curve <span class="math inline">\(y=x^2\)</span>, perturbed with random error.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>,(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)<span class="sc">^</span><span class="dv">2</span>,(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)<span class="sc">^</span><span class="dv">3</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">rbind</span> (h[<span class="dv">1</span>,],<span class="fu">diff</span>(<span class="fu">diag</span>(<span class="dv">20</span>)) <span class="sc">%*%</span> h)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>y<span class="ot">&lt;-</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="at">length=</span><span class="dv">20</span>)<span class="sc">^</span><span class="dv">2</span><span class="sc">+</span><span class="fu">rnorm</span>(<span class="dv">20</span>)<span class="sc">/</span><span class="dv">20</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, y)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>out<span class="ot">&lt;-</span><span class="fu">qpmaj</span>(y,<span class="at">a=</span>a,<span class="at">h=</span>h,<span class="at">verbose=</span><span class="cn">FALSE</span>,<span class="at">itmax=</span><span class="dv">1000</span>, <span class="at">eps =</span> <span class="fl">1e-15</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>,out<span class="sc">$</span>pred,<span class="at">type=</span><span class="st">"l"</span>,<span class="at">lwd=</span><span class="dv">3</span>,<span class="at">col=</span><span class="st">"RED"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="polynomial_files/figure-html/qpmaj7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot above and the output below shows what qpmaj() does in this case.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>$x
+[1] -2.311264e-03  2.292295e-03  1.895686e-05
+
+$fprimal
+[1] 0.0003265426
+
+$fdual
+[1] 0.0003265446
+
+$ftotal
+[1] 0.01655943
+
+$predict
+ [1] -1.255287e-08  4.698305e-03  1.420869e-02  2.864490e-02  4.812065e-02
+ [6]  7.274970e-02  1.026458e-01  1.379226e-01  1.786940e-01  2.250737e-01
+[11]  2.771753e-01  3.351127e-01  3.989996e-01  4.689497e-01  5.450767e-01
+[16]  6.274945e-01  7.163167e-01  8.116571e-01  9.136294e-01  1.022347e+00
+
+$lambda
+ [1] 0.1587839 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+ [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+[15] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+
+$inequalities
+ [1] -1.255287e-08  4.698318e-03  9.510389e-03  1.443620e-02  1.947576e-02
+ [6]  2.462905e-02  2.989609e-02  3.527686e-02  4.077138e-02  4.637964e-02
+[11]  5.210164e-02  5.793738e-02  6.388687e-02  6.995009e-02  7.612706e-02
+[16]  8.241776e-02  8.882221e-02  9.534040e-02  1.019723e-01  1.087180e-01
+
+$itel
+[1] 97</code></pre>
+</div>
+</div>
+<p>We now want to accomplish more or less the same thing, but using a cubic of the form <span class="math inline">\(f(x)=x(c+bx+ax^2)\)</span>. Choosing <span class="math inline">\(a, b\)</span> and <span class="math inline">\(c\)</span> to be nonnegative guarantees monotonicity (and convexity) on the positive axis, with a root at zero. If <span class="math inline">\(b^2\geq 4ac\)</span> then the cubic has two additional real roots, and by AM/GM we can guarantee this by <span class="math inline">\(b\geq a + c\)</span>. So <span class="math inline">\(a\geq 0\)</span>, <span class="math inline">\(c\geq 0\)</span>, and <span class="math inline">\(b\geq a+c\)</span> are our three inequalities.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>,(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)<span class="sc">^</span><span class="dv">2</span>,(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)<span class="sc">^</span><span class="dv">3</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>), <span class="dv">3</span>, <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, y)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>out<span class="ot">&lt;-</span><span class="fu">qpmaj</span>(y,<span class="at">a=</span>a,<span class="at">h=</span>h,<span class="at">verbose=</span><span class="cn">FALSE</span>,<span class="at">itmax=</span><span class="dv">10000</span>, <span class="at">eps =</span> <span class="fl">1e-15</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>,out<span class="sc">$</span>pred,<span class="at">type=</span><span class="st">"l"</span>,<span class="at">lwd=</span><span class="dv">3</span>,<span class="at">col=</span><span class="st">"RED"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="polynomial_files/figure-html/qpmaj8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The results of this alternative way of fitting the cubic are more or less indistinguishable from the earlier results, although this second approach is quite a bit faster (having only three inequalities instead of 21).</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>$x
+[1] -5.673813e-09  1.945808e-03  3.098195e-05
+
+$fprimal
+[1] 0.0007170899
+
+$fdual
+[1] 0.000717091
+
+$ftotal
+[1] 0.01694997
+
+$predict
+ [1] 0.001976784 0.008031075 0.018348765 0.033115745 0.052517907 0.076741142
+ [7] 0.105971343 0.140394402 0.180196208 0.225562656 0.276679635 0.333733038
+[13] 0.396908757 0.466392682 0.542370707 0.625028722 0.714552619 0.811128290
+[19] 0.914941626 1.026178519
+
+$lambda
+[1] 0.2021458 0.0000000 0.0000000
+
+$inequalities
+[1] -5.673813e-09  3.098195e-05  1.914831e-03
+
+$itel
+[1] 25</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="examples" class="level3" data-number="9.3.3">
+<h3 data-number="9.3.3" class="anchored" data-anchor-id="examples"><span class="header-section-number">9.3.3</span> Examples</h3>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-best_17" class="csl-entry" role="listitem">
+Best, M. J. 2017. <em>Quadratic Programming with Computer Programs</em>. Advances in Applied Mathematics. CRC Press.
+</div>
+<div id="ref-ciomek_17" class="csl-entry" role="listitem">
+Ciomek, K. 2017. <em><span class="nocase">hasseDiagram: Drawing Hasse Diagram</span></em>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./interval.html" class="pagination-link" aria-label="Interval MDS">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interval MDS</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./ordinal.html" class="pagination-link" aria-label="Ordinal MDS">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Ordinal MDS</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

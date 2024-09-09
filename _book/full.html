@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>13&nbsp; Full-dimensional Scaling – Least Squares Euclidean Multidimensional Scaling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./unfolding.html" rel="next">
+<link href="./unidimensional.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+</head><body class="nav-sidebar floating">.greybox {
+  padding: 1em;
+  background: white;
+  color: black;
+  border: 2px solid orange;
+  border-radius: 10px;
+}
+.center {
+  text-align: center;
+}
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+
+
+
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./full.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Full-dimensional Scaling</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Least Squares Euclidean Multidimensional Scaling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Note</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notation and Reserved Symbols</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./properties.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Properties of Stress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spaces.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Stress Spaces</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./classical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classical Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./minimization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Minimization of Basic Stress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acceleration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acceleration of Convergence</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonmetric.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Nonmetric MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Interval MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./polynomial.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Polynomial MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ordinal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Ordinal MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./splinical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Splinical MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unidimensional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./full.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Full-dimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./unfolding.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unfolding</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./constrained.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Constrained Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./individual.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Individual Differences</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./asymmetry.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Asymmetry in MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nominal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Nominal MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonordinal.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Nonmonotonic MDS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nonpairs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Compound Objects</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sstress.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">sstress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rstress.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">fstress and rstress</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./altls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Alternative Least Squares Loss</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./inverse.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Inverse Multidimensional Scaling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./stability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Stability of MDS Solutions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./global.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">In Search of Global Minima</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Software</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./backmatter.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">(APPENDIX) Appendices</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#fullconvex" id="toc-fullconvex" class="nav-link active" data-scroll-target="#fullconvex"><span class="header-section-number">13.1</span> Convexity</a></li>
+  <li><a href="#fulloptimal" id="toc-fulloptimal" class="nav-link" data-scroll-target="#fulloptimal"><span class="header-section-number">13.2</span> Optimality</a></li>
+  <li><a href="#fulliteration" id="toc-fulliteration" class="nav-link" data-scroll-target="#fulliteration"><span class="header-section-number">13.3</span> Iteration</a></li>
+  <li><a href="#fullcpspace" id="toc-fullcpspace" class="nav-link" data-scroll-target="#fullcpspace"><span class="header-section-number">13.4</span> Cross Product Space</a></li>
+  <li><a href="#full-dimensional-scaling" id="toc-full-dimensional-scaling" class="nav-link" data-scroll-target="#full-dimensional-scaling"><span class="header-section-number">13.5</span> Full-dimensional Scaling</a></li>
+  <li><a href="#ekman-example" id="toc-ekman-example" class="nav-link" data-scroll-target="#ekman-example"><span class="header-section-number">13.6</span> Ekman example</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="fullchapter" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Full-dimensional Scaling</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="fullconvex" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="fullconvex"><span class="header-section-number">13.1</span> Convexity</h2>
+</section>
+<section id="fulloptimal" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="fulloptimal"><span class="header-section-number">13.2</span> Optimality</h2>
+</section>
+<section id="fulliteration" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="fulliteration"><span class="header-section-number">13.3</span> Iteration</h2>
+</section>
+<section id="fullcpspace" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="fullcpspace"><span class="header-section-number">13.4</span> Cross Product Space</h2>
+<p>So far we have formulated the MDS problem in <em>configuration space</em>. Stress is a function of <span class="math inline">\(X\)</span>, the <span class="math inline">\(n\times p\)</span> configuration matrix. We now consider an alternative formulation, where stress is a function of a positive semi-definite <span class="math inline">\(C\)</span> or order <span class="math inline">\(n\)</span>. The relevant definitions are <span class="math display">\[\begin{equation}
+\sigma(C):=1-2\rho(C)+\eta(C),
+\end{equation}\]</span> where <span class="math display">\[\begin{align*}
+\rho(C)&amp;:=\mathbf{tr}\ B(C)C,\\
+\eta(C)&amp;:=\mathbf{tr}\ VC,
+\end{align*}\]</span> with <span class="math display">\[\begin{equation*}
+B(C):=\mathop{\sum\sum}_{1\leq i&lt;j\leq n} \begin{cases}w_{ij}\frac{\delta_{ij}}{d_{ij}(C)}A_{ij}&amp;\text{ if }d_{ij}(C)&gt;0,\\
+0&amp;\text{ if }d_{ij}(C)=0.\end{cases}
+\end{equation*}\]</span> and <span class="math inline">\(d_{ij}^2(C):=\mathbf{tr}\ A_{ij}C\)</span>.</p>
+<p>We call the space of all positive semi-definite <span class="math inline">\(n\times n\)</span> matrices <em>cross product space</em>. The problem of minimizing <span class="math inline">\(\sigma\)</span> over <span class="math inline">\(n\times p\)</span>-dimensional configuration space is equivalent to the problem of minimizing <span class="math inline">\(\sigma\)</span> over the set of matrices <span class="math inline">\(C\)</span> in <span class="math inline">\(n\times n\)</span>-dimensional cross product space that have rank less than or equal to <span class="math inline">\(p\)</span>. The corresponding solutions are related by the simple relationship <span class="math inline">\(C=XX'\)</span>.</p>
+<div class="cell">
+<pre class="theorem cell-code"><code>Stress is convex on cross product space.</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>First, <span class="math inline">\(\eta\)</span> is linear in <span class="math inline">\(C\)</span>. Second, <span class="math display">\[
+\rho(C)=\mathop{\sum\sum}_{1\leq i&lt;j\leq n} w_{ij}\delta_{ij}\sqrt{\mathbf{tr}\ A_{ij}C}.
+\]</span> This is the weighted sum of square roots of non-negative functions that are linear in <span class="math inline">\(C\)</span>, and it is consequently concave. Thus <span class="math inline">\(\sigma\)</span> is convex.</p>
+</div>
+<p>Unfortunately the subset of cross product space of all matrices with rank less than or equal to <span class="math inline">\(p\)</span> is far from simple (see <span class="citation" data-cites="datorro_15">(<a href="references.html#ref-datorro_15" role="doc-biblioref"><strong>datorro_15?</strong></a>)</span>), so computational approaches to MDS prefer to work in configuration space.</p>
+</section>
+<section id="full-dimensional-scaling" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="full-dimensional-scaling"><span class="header-section-number">13.5</span> Full-dimensional Scaling</h2>
+<p>Cross product space, the set of all positive semi-definite matrices, is a closed convex cone <span class="math inline">\(\mathcal{K}\)</span> in the linear space of all <span class="math inline">\(n\times n\)</span> symmetric matrices. This has an interesting consequence.</p>
+<div class="cell">
+<pre class="theorem cell-code"><code>Full-dimensional scaling, i.e. minimizing $\sigma$ over $\mathcal{K}$, is a convex programming problem. Thus in FDS all local minima are global. If $w_{ij}\delta_{ij}&gt;0$ for all $i,j$ then the minimum is unique.</code></pre>
+</div>
+<p>This result has been around since about 1985. <span class="citation" data-cites="deleeuw_R_93c">De Leeuw (<a href="references.html#ref-deleeuw_R_93c" role="doc-biblioref">1993</a>)</span> gives a proof, but the report it appeared in remained unpublished. A published proof is in <span class="citation" data-cites="deleeuw_groenen_A_97"><span>“<span>Inverse Multidimensional Scaling</span>”</span> (<a href="references.html#ref-deleeuw_groenen_A_97" role="doc-biblioref">2007</a>)</span>. Another treatment of FDS, with a somewhat different emphasis, is in <span class="citation" data-cites="deleeuw_U_14b">De Leeuw (<a href="references.html#ref-deleeuw_U_14b" role="doc-biblioref">2014</a>)</span>.</p>
+<p>Now, by a familiar theorem (Theorem 31.4 in <span class="citation" data-cites="rockafellar_70">Rockafellar (<a href="references.html#ref-rockafellar_70" role="doc-biblioref">1970</a>)</span>), a matrix <span class="math inline">\(C\)</span> minimizes <span class="math inline">\(\sigma\)</span> over <span class="math inline">\(\mathcal{K}\)</span> if and only if <span class="math display">\[\begin{align}
+C&amp;\in\mathcal{K},\\
+V-B(C)&amp;\in\mathcal{K},\\
+\mathbf{tr}\ C(V-B(C))&amp;=0.
+\end{align}\]</span> We give a computational proof of this result for FDS that actually yields a bit more.</p>
+<div class="cell">
+<pre class="theorem cell-code"><code>For $\Delta\in\mathcal{K}$ we have
+\begin{equation}
+\sigma(C+\epsilon\Delta)=\sigma(C)-2\epsilon^{\frac12}\sum_{\mathbf{tr}\ A_iC = 0}w_i\delta_i\sqrt{\mathbf{tr}\ A_i\Delta}+\epsilon\ \mathbf{tr}\ (V-B(C))\Delta
++o(\epsilon).\label{E:expand}
+\end{equation}</code></pre>
+</div>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>Simple expansion.</p>
+</div>
+<hr>
+<div class="cell">
+<pre class="theorem cell-code"><code>Suppose $C$ is a solution to the problem of minimizing $\sigma$ over $\mathcal{K}$. Then
+
+* $\mathbf{tr}\ A_{ij}C &gt; 0$ for all $i,j$ for which $w_{ij}\delta_{ij}&gt;0$.
+* $V-B(C)$ is positive semi-definite.
+* $\mathbf{tr}\ C(V-B(C))=0$.
+* If $C$ is positive definite then $V=B(C)$ and $\sigma(C)=0$.
+</code></pre>
+</div>
+<hr>
+<div class="proof">
+<p><span class="proof-title"><em>Proof</em>. </span>The <span class="math inline">\(\epsilon^\frac12\)</span> term in <span class="math inline">\(\eqref{E:expand}\)</span> needs to vanish at a local minimum. This proves the first part. It follows that at a local minimum</p>
+<p><span class="math display">\[\begin{equation*}
+\sigma(C+\epsilon\Delta)=\sigma(C)+
+\epsilon\ \mathbf{tr}\ (V-B(C))\Delta+o(\epsilon).
+\end{equation*}\]</span></p>
+<p>If <span class="math inline">\(V-B(C)\)</span> is not positive semi-definite, then there is a <span class="math inline">\(\Delta\in\mathcal{K}\)</span> such that <span class="math inline">\(\mathbf{tr}\ (V-B(C))\Delta &lt; 0\)</span>. Thus <span class="math inline">\(C\)</span> cannot be the minimum, which proves the second part. If we choose <span class="math inline">\(\Delta=C\)</span> we find</p>
+<p><span class="math display">\[\begin{equation*}
+\sigma((1+\epsilon)C)=\sigma(C)+
+\epsilon\ \mathbf{tr}\ (V-B(C))C+o(\epsilon).
+\end{equation*}\]</span></p>
+<p>and choosing <span class="math inline">\(\epsilon\)</span> small and negative shows we must have <span class="math inline">\(\mathbf{tr}\ (V-B(C))C=0\)</span> for <span class="math inline">\(C\)</span> to be a minimum. This proves the third part. Finally, if <span class="math inline">\(\sigma\)</span> has a minimum at <span class="math inline">\(C\)</span>, and <span class="math inline">\(C\)</span> is positive definite, then from parts 2 and 3 we have <span class="math inline">\(V=B(C)\)</span>. Comparing off-diagonal elements shows <span class="math inline">\(\Delta=D(C)\)</span>, and thus <span class="math inline">\(\sigma(C)=0\)</span>.</p>
+</div>
+<p>If <span class="math inline">\(C\)</span> is the solution of the FDS problem, then <span class="math inline">\(\mathbf{rank}(C)\)</span> defines the <em>Gower rank</em> of the dissimilarities. The number of positive eigenvalues of the negative of the doubly-centered matrix of squared dissimilarities, the matrix factored in classical MDS, defines the <em>Torgerson rank</em> of the dissimilarities. The <em>Gower conjecture</em> is that the Gower rank is less than or equal to the Torgerson rank. No proof and no counter examples have been found.</p>
+<p>We compute the FDS solution using the smacof algorithm <span class="math display">\[\begin{equation}
+X^{(k+1)}=V^+B(X^{(k)})
+\end{equation}\]</span> in the space of all <span class="math inline">\(n\times n\)</span> configurations, using the identity matrix as a default starting point. Since we work in configuration space, not in crossproduct space, this does not guarantee convergence to the unique FDS solution, but after convergence we can easily check the necessary and sufficient conditions of theorem @ref(thm:rockafellar).</p>
+<p>As a small example, consider four points with all dissimilarities equal to one, except <span class="math inline">\(\delta_{14}\)</span> which is equal to three. Clearly the triangle inequality is violated, and thus there certainly is no perfect fit mapping into Euclidean space.</p>
+<p>The FDS solution turns out to have rank two, thus the Gower rank is two. The singular values of the FDS solution are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4508464709 0.2125310645 0.0000001303</code></pre>
+</div>
+</div>
+<p>Gower rank two also follows from the eigenvalues of the matrix <span class="math inline">\(B(C)\)</span>, which are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.0000000000 1.0000000000 0.9205543464</code></pre>
+</div>
+</div>
+</section>
+<section id="ekman-example" class="level2" data-number="13.6">
+<h2 data-number="13.6" class="anchored" data-anchor-id="ekman-example"><span class="header-section-number">13.6</span> Ekman example</h2>
+<p>The <span class="citation" data-cites="ekman_54">Ekman (<a href="references.html#ref-ekman_54" role="doc-biblioref">1954</a>)</span> color data give similarities between 14 colors.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>     434  445  465  472  490  504  537  555  584  600  610  628  651
+445 0.86                                                            
+465 0.42 0.50                                                       
+472 0.42 0.44 0.81                                                  
+490 0.18 0.22 0.47 0.54                                             
+504 0.06 0.09 0.17 0.25 0.61                                        
+537 0.07 0.07 0.10 0.10 0.31 0.62                                   
+555 0.04 0.07 0.08 0.09 0.26 0.45 0.73                              
+584 0.02 0.02 0.02 0.02 0.07 0.14 0.22 0.33                         
+600 0.07 0.04 0.01 0.01 0.02 0.08 0.14 0.19 0.58                    
+610 0.09 0.07 0.02 0.00 0.02 0.02 0.05 0.04 0.37 0.74               
+628 0.12 0.11 0.01 0.01 0.01 0.02 0.02 0.03 0.27 0.50 0.76          
+651 0.13 0.13 0.05 0.02 0.02 0.02 0.02 0.02 0.20 0.41 0.62 0.85     
+674 0.16 0.14 0.03 0.04 0.00 0.01 0.00 0.02 0.23 0.28 0.55 0.68 0.76</code></pre>
+</div>
+</div>
+<p>We use three different transformations of the similarities to dissimilarities. The first is <span class="math inline">\(1-x\)</span>, the second <span class="math inline">\((1-x)^3\)</span> and the third <span class="math inline">\(\sqrt[3]{1-x}\)</span>. We need the following iterations to find the FDS solution (up to a change in loss of 1e-15).</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>power =  1.00  itel =    6936  stress =  0.0000875293 
+power =  3.00  itel =     171  stress =  0.0110248119 
+power =  0.33  itel =     423  stress =  0.0000000000 </code></pre>
+</div>
+</div>
+<p>For the same three solutions we compute singular values of the thirteen-dimensional FDS solution.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.1797609824 0.1454675297 0.0843865491 0.0777136109 0.0486123551
+ [6] 0.0393576522 0.0236290817 0.0162344515 0.0072756171 0.0000031164
+[11] 0.0000000009 0.0000000000 0.0000000000
+
+ [1] 0.2159661347 0.1549184093 0.0000000727 0.0000000041 0.0000000000
+ [6] 0.0000000000 0.0000000000 0.0000000000 0.0000000000 0.0000000000
+[11] 0.0000000000 0.0000000000 0.0000000000
+
+ [1] 0.1336126813 0.1139019875 0.0880453752 0.0851609618 0.0710424935
+ [6] 0.0664988952 0.0561005006 0.0535112029 0.0492295395 0.0479964575
+[11] 0.0468628701 0.0410193579 0.0388896490</code></pre>
+</div>
+</div>
+<p>Thus the Gower ranks of the transformed dissimilarities are, repectively, nine (or ten), two, and thirteen. Note that for the second set of dissimilarities, with Gower rank two, the first two principal components of the thirteen-dimensional solution are the global minimizer in two dimensions. To illustrate the Gower rank in yet another way we give the thirteen non-zero eigenvalues of <span class="math inline">\(V^+B(X)\)</span>, so that the Gower rank is the number of eigenvalues equal to one. All three solutions satisfy the necessary and sufficient conditions for a global FDS solution.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 1.0000000432 1.0000000222 1.0000000012 1.0000000005 1.0000000002
+ [6] 1.0000000001 1.0000000000 1.0000000000 0.9999993553 0.9989115116
+[11] 0.9976821885 0.9942484083 0.9825147154
+
+ [1] 1.0000000000 1.0000000000 0.9234970864 0.9079012130 0.8629365849
+ [6] 0.8526920031 0.8298036209 0.8145561677 0.7932385763 0.7916517225
+[11] 0.7864426781 0.7476794757 0.7282682474
+
+ [1] 1.0000000820 1.0000000241 1.0000000047 1.0000000009 1.0000000004
+ [6] 1.0000000003 1.0000000001 1.0000000001 1.0000000001 1.0000000000
+[11] 0.9999999999 0.9999999689 0.9999999005</code></pre>
+</div>
+</div>
+<p>We also plot the first two principal components of the thirteen-dimensional FDS solution. Not surprisingly, they look most circular and regular for the solution with power three, because this actually is the global minimum over two-dimensional solutions. The other configurations still have quite a lot of variation in the remaining dimensions.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="full_files/figure-html/ekmanconfs-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Ekman data, configurations for three powers</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure @ref{fig:ekmantrans} illustrates that the FDS solution with power 3 is quite different from power 1 and power one <span class="math inline">\(1/3\)</span> Basically the transformations with lower powers result in dissimilarity measures that are very similar to Euclidean distances in a high-dimensional configuration, while power equal to 3 makes the dissimilarties less Euclidean. This follows from metric transform theory, where concave increasing transforms of finite metric spaces tend to be Euclidean. In particular the square root transformation of a finite metric space has the Euclidean four-point property, and there is a <span class="math inline">\(c&gt;0\)</span> such that the metric transform <span class="math inline">\(f(t)=ct/(1+ct)\)</span> makes a finite metric space Euclidean (<span class="citation" data-cites="maehara_86">Maehara (<a href="references.html#ref-maehara_86" role="doc-biblioref">1986</a>)</span>).</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="full_files/figure-html/ekmantrans-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Ekman data, fit plots for three powers</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-deleeuw_R_93c" class="csl-entry" role="listitem">
+De Leeuw, J. 1993. <span>“Fitting Distances by Least Squares.”</span> Preprint Series 130. Los Angeles, CA: UCLA Department of Statistics. <a href="https://jansweb.netlify.app/publication/deleeuw-r-93-c/deleeuw-r-93-c.pdf">https://jansweb.netlify.app/publication/deleeuw-r-93-c/deleeuw-r-93-c.pdf</a>.
+</div>
+<div id="ref-deleeuw_U_14b" class="csl-entry" role="listitem">
+———. 2014. <span>“<span class="nocase">Bounding, and Sometimes Finding, the Global Minimum in Multidimensional Scaling</span>.”</span> UCLA Department of Statistics. <a href="https://jansweb.netlify.app/publication/deleeuw-u-14-b/deleeuw-u-14-b.pdf">https://jansweb.netlify.app/publication/deleeuw-u-14-b/deleeuw-u-14-b.pdf</a>.
+</div>
+<div id="ref-ekman_54" class="csl-entry" role="listitem">
+Ekman, G. 1954. <span>“<span class="nocase">Dimensions of Color Vision</span>.”</span> <em>Journal of Psychology</em> 38: 467–74.
+</div>
+<div id="ref-deleeuw_groenen_A_97" class="csl-entry" role="listitem">
+<span>“<span>Inverse Multidimensional Scaling</span>.”</span> 2007. <em>Journal of Classification</em> 14: 3–21.
+</div>
+<div id="ref-maehara_86" class="csl-entry" role="listitem">
+Maehara, H. 1986. <span>“<span class="nocase">Metric Transforms of Finite Spaces and Connected Graphs</span>.”</span> <em>Discrete Mathematics</em> 61: 235–46.
+</div>
+<div id="ref-rockafellar_70" class="csl-entry" role="listitem">
+Rockafellar, R. T. 1970. <em>Convex Analysis</em>. Princeton University Press.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./unidimensional.html" class="pagination-link" aria-label="Unidimensional Scaling">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Unidimensional Scaling</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./unfolding.html" class="pagination-link" aria-label="Unfolding">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unfolding</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

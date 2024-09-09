@@ -1,0 +1,71 @@
+project:
+  type: book
+
+book:
+  title: "Least Squares Euclidean Multidimensional Scaling"
+  subtitle: "50 years of smacof"
+  author: 
+    - name: Jan de Leeuw
+      orcid: 0000-0003-1420-1797
+      email: jan@deleeuwpdx.net
+      affiliation: 
+        - name: University of California Los Angeles
+          city: Los Angeles
+          state: CA
+          url: www.ucla.edu
+  date: "09-08-2024"
+  chapters:
+    - index.qmd
+    - notation.qmd  
+    - preface.qmd
+    - intro.qmd
+    - properties.qmd
+    - spaces.qmd
+    - classical.qmd
+    - minimization.qmd
+    - acceleration.qmd
+    - nonmetric.qmd
+    - interval.qmd
+    - polynomial.qmd
+    - ordinal.qmd
+    - splinical.qmd
+    - unidimensional.qmd
+    - full.qmd
+    - unfolding.qmd
+    - constrained.qmd
+    - individual.qmd
+    - asymmetry.qmd
+    - nominal.qmd
+    - nonordinal.qmd
+    - nonpairs.qmd
+    - sstress.qmd
+    - rstress.qmd
+    - altls.qmd
+    - inverse.qmd
+    - stability.qmd
+    - global.qmd
+    - software.qmd
+    - backmatter.qmd
+    - references.qmd
+
+bibliography: [mypubs.bib, total.bib]
+
+format:
+  html:
+    theme: cosmo
+    include-in-header: preamble.css
+  pdf:
+    documentclass: scrreprt
+    keep_tex: true
+    latex_engine: lualatex
+    include-in-header: preamble.tex
+    fontsize: 12pt
+graphics: true
+link-citations: true
+mainfont: Times New Roman
+coverpage: cover.png
+
+    
+
+
+
