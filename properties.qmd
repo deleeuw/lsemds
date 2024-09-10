@@ -1,4 +1,4 @@
-```{r echo = FALSE}
+```{r abba, echo = FALSE}
 source("loadMe.R")
 ```
 

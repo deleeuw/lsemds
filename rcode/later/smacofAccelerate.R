@@ -1,9 +1,3 @@
-library(MASS)
-library(microbenchmark)
-library(numDeriv)
-
-source("smacofUtils.R")
-source("smacofDerivatives.R")
 
 smacofAccelerate <- function(delta,
                              wgth = 1 - diag(nrow(delta)),

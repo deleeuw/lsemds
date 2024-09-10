@@ -1,3 +1,4 @@
+
 smacofCompare <- function(delta, ndim = 2) {
   nobj <- nrow(delta)
   wgth <- 1 - diag(nobj)

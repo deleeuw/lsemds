@@ -208,6 +208,7 @@ has some unintended consequences, which basically imply that it should never
 be used without additional precautions. Let's take a look at the
 Ekman results.
 ```{r compute5, echo = FALSE, cache = FALSE}
+ekman <- as.matrix(ekman)
 h5 <- smacofAccelerate(ekman, opt = 5, halt = 0, epsf = 1e-15, verbose = 1)
 ```
 In iteration `r h5$itel`, the final iteration, stress is `r prettyNum(h5$s, digits = 15, format = "f")`. The "change" $\eta(X^{(k)}-X^{(k+1)})$ is `r prettyNum(h5$chng, digits = 15, format = "f")` and the estimate

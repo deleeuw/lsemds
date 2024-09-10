@@ -1,8 +1,3 @@
-library(numDeriv)
-
-source("smacofUtils.R")
-source("smacofPCADerivative.R")
-source("smacofQRDerivative.R")
 
 smacofRhoHessian <- function(x, delta, wgth) {
   nobj <- nrow(x)

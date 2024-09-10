@@ -23,7 +23,7 @@ book:
     - spaces.qmd
     - classical.qmd
     - minimization.qmd
-    - acceleration.qmd
+#    - acceleration.qmd
     - nonmetric.qmd
     - interval.qmd
     - polynomial.qmd
