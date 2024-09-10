@@ -56,7 +56,6 @@ format:
     include-in-header: preamble.css
   pdf:
     documentclass: scrreprt
-    keep_tex: true
     latex_engine: lualatex
     include-in-header: preamble.tex
     fontsize: 12pt

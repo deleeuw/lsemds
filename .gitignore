@@ -9,6 +9,8 @@
 !README.md
 /_book/
 /.quarto/
+/acceleration_cache/
+/acceleration_files/
 /constrained_cache/
 /constrained_files/
 /full_cache/
