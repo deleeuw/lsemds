@@ -160,6 +160,244 @@ For comparison purposes we also run $\text{up}_{AA}(x):=\text{up}_A(\text{up}_A(
 Again $\text{up}_{AB}$ is an attractive strategy. It works with both
 stop_s and stop_x and it accelerates. Less so than $\text{up}_B$, however. If the ACR of $\text{up}_A$ is $1-\epsilon$, then, by the same reasoning as before, the ACR of $\text{up}_{AB}$ is $(1-\epsilon)^\frac32$.
 
+# Relaxed
+
+## Modification
+
+@deleeuw_heiser_C_80 first suggested the "relaxed" update
+\begin{equation}
+\Psi(X):=2\Phi(X)-X.
+(\#eq:relax)
+\end{equation}
+The reason for recommending \@ref(eq:relax) is two-fold. First, the smacof inequality \@ref(eq:smacofinequality) says
+\begin{equation}
+\sigma(X)\leq 1+\eta^2(X-\Phi(Y))-\eta^2(\Phi(Y)).
+(\#eq:smaineq)
+\end{equation}
+If $X=\alpha\Phi(Y)+(1-\alpha)Y$ then this becomes
+\begin{equation}
+\sigma(\alpha\Phi(Y)+(1-\alpha)Y)\leq 1+(1-\alpha)^2\eta^2(Y-\Phi(Y))-\eta^2(\Phi(Y))
+\end{equation}
+If $(1-\alpha)^2\leq 1$ then 
+\begin{equation}
+1+(1-\alpha)^2\eta^2(Y-\Phi(Y))-\eta^2(\Phi(Y))\leq 1+\eta^2(Y-\Phi(Y))-\eta^2(\Phi(Y))=\sigma(Y)
+\end{equation}
+Thus updating with $X^{(k+1)}=\alpha\Phi(X^{(k)})+(1-\alpha)X^{(k)}$ is a stricly
+monotone algorithm as long as $0\leq\alpha\leq 2$.
+
+But if $\alpha=2$ an $Y=\lambda X$ !!
+
+The second reason for choosing the relaxed update \@ref(eq:relax) given by @deleeuw_heiser_C_80
+is that its asymptotic convergence rate is 
+\begin{equation}
+\max_s|2\lambda_s-1|=\max(2\lambda_{\text{max}}-1,1-2\lambda_{\text{min}}).
+\end{equation}
+@deleeuw_heiser_C_80 then somewhat carelessly assume that this is equal to
+$2\lambda_{\text{max}}-1$ and argue that if $\lambda_{\text{max}}=1-\epsilon$
+with $\epsilon$ small, as it usually is in MDS,  then 
+\begin{equation}
+2\lambda_{\text{max}}-1=1-2\epsilon\approx(1-\epsilon)^2=\lambda_{\text{max}}^2,
+\end{equation}
+so that the relaxed update requires approximately half the number of iterations of the
+basic update. Despite the somewhat sloppy reasoning, the approximate halving of the number of iterations is often observed in practice. 
+
+## Function Values
+
+It turns out (@groenen_glunt_hayden_96, @deleeuw_R_06b), however, that applying the relaxed update
+has some unintended consequences, which basically imply that it should never
+be used without additional precautions. Let's take a look at the
+Ekman results.
+```{r compute5, echo = FALSE, cache = FALSE}
+h5 <- smacofAccelerate(ekman, opt = 5, halt = 0, epsf = 1e-15, verbose = 1)
+```
+In iteration `r h5$itel`, the final iteration, stress is `r prettyNum(h5$s, digits = 15, format = "f")`. The "change" $\eta(X^{(k)}-X^{(k+1)})$ is `r prettyNum(h5$chng, digits = 15, format = "f")` and the estimate
+of the asymptotic convergence ratio, the "change" divided by the "change" of the 
+previous iteration, is `r prettyNum(h5$labd, digits = 15, format = "f")`.
+
+The loss function values converge and the number of iterations is reduced from 57 to 23.
+But we see that $\eta(X^{(k+1)}-X^{(k)})$ does not converge to zero, and that $\sigma_k$ converges to a value which does not correspond to a local minimum of $\sigma$.
+
+
+
+If we check the conditions of theorem 3.1 in @meyer_76 we see that, although the 
+algorithmic map is closed and the iterates are in a compact set, $\Psi$
+is not strictly monotone at some non-fixed points. The problem was first discussed
+in @groenen_glunt_hayden_96. Suppose $X$ is a fixed point and  $\tau\not= 1$. Then
+$\tau\overline{X}$ is not a fixed point of $\Psi$, because 
+$\Psi(\tau\overline{X})=(2-\tau)\overline{X}$. And
+\begin{equation}
+\sigma(\tau\overline{X})=1-\tau\rho(\overline{X})+\frac12\tau^2\eta^2(\overline{X})=
+1-\frac12\tau(2-\tau)\rho(\overline{X})=\sigma((2-\tau)\overline{X})
+(\#eq:sigmatau)
+\end{equation}
+Thus the algorithm has convergent subsequences which may not converge to a fixed
+point of $\Psi$ (and thus of $\Phi$). And indeed, the computational results show that the method produces a sequence $X^{(k)}$ with two subseqences. If $\overline{X}$ is a fixed point of $\Phi$ then there is a $\tau>0$ such that
+the subsequence with $k$ even converges to $\tau\overline{X}$
+while the subsequence with $k$ odd converges to $(2-\tau)\overline{X}$.
+
+This suggests a simple fix. After convergence of the funcion values we make
+a final update using $\Phi$ instead of $\Psi$. Computationally this is simple to do. If the final iteration updates $X^{(k)}$ to $X^{(k+1)}=\Psi(X^{(k)})$ then
+set the final solution to the average $\frac12(X^{(k)}+X^{(k+1)})$. Making this 
+adjustment at the end of the Ekman sequence gives us a final stress equal to `r prettyNum(h4$s, digits = 15, format = "f")`.
+
+## Asymptotic Rate of Convergence
+
+The eigenvalues of the Jacobian are 
+```{r eval5f, echo = FALSE, eval = FALSE}
+jacob4f <- smacofRelaxJacobianFormula(h4$x, h4$delta, h4$wgth, opt = 4)
+smacofMatrixPrint(Re(eigen(jacob4f)$values))
+```
+
+```{r eval5n, echo = FALSE, eval = FALSE}
+jacob4n<- smacofRelaxJacobianNumerical(h4$x, h4$delta, h4$wgth, opt = 4)
+smacofMatrixPrint(Re(eigen(jacob4n)$values))
+```
+
+# Doubling
+
+## Modification
+
+The analysis in the previous section suggest the update function $\Psi^2$, i.e.
+$$
+\Xi(X)=\Psi(\Psi(X)).
+$$
+
+## Function Values
+
+The algorithm generates the same sequence of function values 
+and configurations as the relaxed algoroithm $\Psi$. The only difference is that we
+test for convergence, and compute CHNG and EARC, every other
+iteration.
+
+With $\Psi^2$ the algorithm is everywhere strictly monotonic and does
+converge to a fixed point. But not all problems associated with $\Psi$ 
+have disappeared.
+If $X$ is a stationary point of $\sigma$, and thus a fixed 
+point of $\Phi$, $\Psi$, and $\Psi^2$, then $\tau X$ is a 
+fixed point of $\Psi^2$ for all $\tau>0$. Thus we cannot
+exclude the possibility that the sequence converges to
+a fixed point proportional to $X$, but not equal to $X$.
+
+Here are the results for the Ekman data if we use $\Psi^2$.
+```{r compute6, echo = FALSE, cache = TRUE}
+h6 <- smacofAccelerate(ekman, opt = 6, halt = 0, epsf = 1e-15, verbose = 0)
+```
+In iteration `r h6$itel`, the final iteration, stress is `r prettyNum(h6$s, digits = 15, format = "f")`. The CHNG is `r prettyNum(h6$chng, digits = 15, format = "f")` and the EARC is `r prettyNum(h6$labd, digits = 15, format = "f")`. 
+
+Again we need some adjustment. A final update using $\Phi$ will do the trick.
+After this adjustment stress is `r prettyNum(h6$s, digits = 15, format = "f")`
+
+
+## Asymptotic Rate of Convergence
+
+$$
+\mathcal{D}\Psi^2_X(H)=\mathcal{D}\Psi_{\Psi(X)}(\mathcal{D}\Psi_X(H))
+$$
+
+The asymptotic convergence rate is 
+$$
+\max_s (2\lambda_s-1)^2=\max\{ (2\lambda_\text{max}-1)^2, (2\lambda_\text{min}-1)^2\}
+$$.
+
+
+```{r eval6, echo = FALSE, eval = FALSE}
+jacob5 <- numHess(h6$x, h5$delta, h5$wgth, opt = 4)
+smacofMatrixPrint(Re(eigen(jacob5)$values))
+```
+
+# Dilation
+
+## Modification
+
+@deleeuw_R_06b discusses some other ways to fix the relaxed update problem. 
+The first one, borrowed from @groenen_glunt_hayden_96, defines
+Defines
+$$
+\Pi(X):=\frac{\rho(X)}{\eta^2(X)}X
+$$
+and 
+$$
+\Xi(X):=\Pi(\Psi(X))
+$$
+## Function Values
+
+Here are the results for the Ekman data if we use dilation.
+```{r compute7, echo = FALSE, cache = TRUE}
+h7 <- smacofAccelerate(ekman, opt = 7, halt = 0, epsf = 1e-15, verbose = 0)
+```
+In iteration `r h7$itel`, the final iteration, stress is `r prettyNum(h7$s, digits = 15, format = "f")`. The CHNG is `r prettyNum(h7$chng, digits = 15, format = "f")` and the EARC is `r prettyNum(h7$labd, digits = 15, format = "f")`. 
+
+
+## Asymptotic Rate of Convergence
+
+First, differentiate $\Pi$ of ... Using the product and quotient rules for differentiation we find
+$$
+\mathcal{D}\Pi_X(H)=\frac{\rho(X)}{\eta^2(X)}H+\frac{\eta^2(X)\mathcal{D}\rho_X(H)-\rho(X)\mathcal{D}\eta^2_X(H)}{\eta^4(X)}X
+$$
+Using
+$$
+\mathcal{D}\rho_X(H)=\text{tr}\ H'B(X)X
+$$
+$$
+\mathcal{D}\eta^2_X(H)=2\text{tr}\ H'VX
+$$
+this becomes
+$$
+\mathcal{D}\Pi_X(H)=\frac{\rho(X)}{\eta^2(X)}H+\text{tr}\ H'\left\{\frac{\eta^2(X) B(X)X-2\rho(X)VX}{\eta^4(X)}\right\}X
+$$
+
+
+The chain rule says
+$$
+\mathcal{D}\Xi_X(H)=\mathcal{D}\Psi_X(H)-\frac{\text{tr}\ X'V\mathcal{D}\Psi_X(H)}{\text{tr}\ X'VX}X
+$$
+Since $\mathcal{D}\Psi_X(X)=-X$ we have
+$$
+\mathcal{D}\Xi_X(X)=-X+\frac{\text{tr}\ X'VX}{\text{tr}\ X'VX}X=0
+$$
+Thus the offending eigenvector $X$ of $\mathcal{D}\Psi$ is eliminated.
+
+More generally, if $\mathcal{D}\Psi_X(H)=\lambda H$ with $H\not= X$ then
+$\mathcal{D}\Xi_X(H-X)=\lambda (H-X),$
+and thus $\mathcal{D}\Xi$ has the same eigenvalues as $\mathcal{D}\Psi$.
+
+
+# Stabilizing
+
+## Modification
+
+Another strategy 
+
+\begin{equation}
+\Xi(X):=\Phi(\Psi(X))
+\end{equation}
+
+$$
+\mathcal{D}\Xi_X(H)=\mathcal{D}\Phi_{\Psi(X)}(\mathcal{D}\Psi_X(H))=2\mathcal{D}\Phi_{\Psi(X)}(\mathcal{D}\Phi_X(H))-\mathcal{D}\Phi_{\Psi(X)}(H)
+$$
+
+\begin{equation}
+\max_s|\lambda_s(2\lambda_s-1)|
+\end{equation}
+
+## Function Values
+
+Here are the results for the Ekman data if we use stabilization.
+```{r compute8, echo = FALSE, cache = TRUE}
+h8 <- smacofAccelerate(ekman, opt = 8, halt = 0, epsf = 1e-15, verbose = 0)
+```
+In iteration `r h8$itel`, the final iteration, stress is `r prettyNum(h8$s, digits = 15, format = "f")`. The CHNG is `r prettyNum(h8$chng, digits = 15, format = "f")` and the EARC is `r prettyNum(h8$labd, digits = 15, format = "f")`. 
+
+## Asymptotic Rate of Convergence
+
+
+
+
+
+
+
+
+
 ## One-Parameter Methods
 
 In psychometrics, and perhaps in multivariate analysis, @ramsay_75 was the first to apply a general acceleration methods to sequences in $\mathbb{R}^n$ of the form $x^{(k+1)}=f(x^{(k)})$. 
