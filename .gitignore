@@ -3,6 +3,8 @@
 .RData
 .Ruserdata
 *.pdf
+*.tex
+*.md
 _book/
 /.quarto/
 constrained_cache/
