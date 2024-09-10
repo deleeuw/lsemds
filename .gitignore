@@ -4,6 +4,7 @@
 .Ruserdata
 .pdf
 .tex
+.log
 !preamble.tex
 .md
 !README.md
