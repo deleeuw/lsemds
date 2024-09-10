@@ -8,6 +8,7 @@
 !preamble.tex
 .md
 !README.md
+.Rproj
 /_book/
 /.quarto/
 /acceleration_cache/
