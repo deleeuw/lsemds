@@ -17,7 +17,7 @@ $\mathbb{R}^p$. Several variations of this basic theorem are possible
 popularized by @torgerson_58, with a simplified proof, using notation
 and terminology due to @critchley_88.
 
-Classical scaling can be thought of as an independent MDS method, in fact as the only MDS method available until the early 1960's. More commonly these days it is a method to provide a generally excellent starting point for iterative procedures to minimize stress.
+Classical scaling can be thought of as an early MDS method, in fact as the only MDS method available until the early 1960's. More commonly these days it is a method to provide a generally excellent starting point for iterative procedures to minimize stress.
 
 ## Algebra
 
@@ -25,25 +25,22 @@ Classical scaling can be thought of as an independent MDS method, in fact as the
 
 The *Torgerson transform* of a matrix is a linear function from the
 space of real symmetric hollow matrices to the space of doubly-centered
-real symmetric matrices defined as
+real symmetric matrices defined by
 
-\begin{equation}
-\tau(S):=-\frac12 JSJ,
+$$\tau(S):=-\frac12 JSJ,
 (\#eq:torgerson)
-\end{equation}
+$${#eq:torgerson}
 
-with $J$ the centering matrix $I-\frac{1}{n}ee'$. For historical reasons
+with $J$ the centering matrix of order $n$, $J=I-\frac{1}{n}ee'$. For historical reasons
 \@(eq:torgerson) may be more familiar in elementwise notation. Spelled
-out it is
-
-\begin{equation}
+out this is
+$$
 \tau_{ij}(S)=-\frac12\{s_{ij}-s_{i\bullet}-s_{\bullet j}+s_{\bullet\bullet}\},
-(\#eq:torgelem)
-\end{equation}
-
+\#eq:torgelem
+$${#eq:torgelem}
 where bullets are indices over which we average. The symbol $\tau$ was chosen by @critchley_88 to honor Torgerson.
 
-Some simple calculation with \@ref(eq:torgelem), using the hollowness of
+Some simple calculation with \@(eq:torgelem), using the hollowness of
 $S$, gives
 
 \begin{equation}

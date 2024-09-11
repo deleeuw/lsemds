@@ -38,15 +38,14 @@ begins with "+" as well. I'll try to avoid ending a line with "+" or
 "-", especially with "-", but if it happens you are warned. A silly
 example is
 
-```{=tex}
-\begin{align}
+\begin{align*}
 &(x+y)^2-\\
 &+4x=\\
 &=x^2+y^2-2x=\\
 &=(x-y)^2\geq\\
 &\geq 0.
-\end{align}
-```
+\end{align*}
+
 Just as an aside: if I refer to something that has been mentioned
 "above" I mean something that comes earlier in the book and "below"
 refers to anything that comes later. This always confuses me, so I had

@@ -13,16 +13,18 @@ book:
           city: Los Angeles
           state: CA
           url: www.ucla.edu
-  date: "09-10-2024"
+      license: "CC0"
+  date: today
+  date-format: long
   chapters:
     - index.qmd
     - notation.qmd  
     - preface.qmd
     - intro.qmd
-    - properties.qmd
-    - spaces.qmd
-    - classical.qmd
-    - minimization.qmd
+#    - properties.qmd
+#    - spaces.qmd
+#    - classical.qmd
+#    - minimization.qmd
 #    - acceleration.qmd
 #    - nonmetric.qmd
 #    - interval.qmd
@@ -54,7 +56,9 @@ pdf-engine: lualatex
 format:
   html:
     theme: cosmo
-    include-in-header: preamble.css
+    include-in-header: 
+      - preamble.css
+      - mathjax.html
   pdf:
     documentclass: scrreprt
     include-in-header: preamble.tex
